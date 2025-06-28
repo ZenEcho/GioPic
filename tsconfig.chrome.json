@@ -1,0 +1,17 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "types": [
+            "chrome"
+        ],
+        "lib": [
+            "dom",
+            "esnext"
+        ]
+    },
+    "include": [
+        "src/background/**/*",
+        "src/content/**/*",
+        "src/fullDOM/components/buttom.vue"
+    ]
+}
