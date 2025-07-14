@@ -1,7 +1,6 @@
 /// <reference types="chrome" />
 
 import { activateBedConfig } from '@/utils/storage';
-import { generateUniqueId } from '@/utils/generate';
 import { useIndexedDB } from '@/stores/useIndexedDB';
 import { useLocalStorage } from '@/stores/useLocalStorage';
 import type { UploadAreaType, UploadFunctionSettingsType, backgroundSendFileType } from '@/type/index'
@@ -286,7 +285,7 @@ function handleContextMenuClick(info: chrome.contextMenus.OnClickData) {
    * @param {Object} data2 - 第二个数据对象。
    * @returns {boolean} - 如果数据对象的所有属性值（排除 'ConfigName'）相同，则返回 true，否则返回 false。
    */
-function isSameData(data1: Record<string, any>, data2: Record<string, any>) {
+function isSameData(data1: Record<string, any>, data2: Record<string, any>): boolean {
     const excludedProps = ['ConfigName'];
     for (const key of Object.keys(data2)) {
         if (!excludedProps.includes(key) && data1[key] !== data2[key]) {
@@ -418,7 +417,7 @@ function handleMessage(request: any, sender: chrome.runtime.MessageSender, sendR
         activateBedConfig(external).then(() => {
             useIndexedDB.BedConfigStore.getAll().then(BedConfig => {
                 if (!BedConfig.some(existingData => isSameData(existingData.data, external.data))) {
-                    external.id = generateUniqueId()
+                    external.id = crypto.randomUUID()
                     external.index = 1000 + BedConfig.length + 1
                     BedConfig.push(external);
                     useIndexedDB.BedConfigStore.put(external).then(() => {
