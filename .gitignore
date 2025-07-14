@@ -32,3 +32,6 @@ coverage
 /dist
 /*.js
 /*.js.map
+
+# 忽略 src/typings 目录下的所有文件
+/src/typings/

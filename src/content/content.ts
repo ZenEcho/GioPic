@@ -2,7 +2,7 @@ import { createApp, h } from 'vue'
 import { NNotificationProvider } from 'naive-ui'
 import notificationView from './components/notification.vue'
 import stickerView from './components/sticker.vue'
-import sidebarView from './components/sidebar.vue'
+import sidebarView from './components/webSidebar.vue'
 import { checkImageBed } from './getToken'
 import 'virtual:uno.css'
 
