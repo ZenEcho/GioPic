@@ -1,7 +1,6 @@
 <template>
-    <div v-if="uploadAreaData?.status" v-show="!iframeShow" ref="uploadAreaRef" title="长按拖动" class="uploadArea fixed"
-        :style="sidebarStyle" @mousedown="handleMouseDown" @mouseup="handleMouseUp" @click="handleClick"
-        @mouseleave="handleMouseUp"></div>
+    <div v-if="uploadAreaData?.status" v-show="!iframeShow" ref="uploadAreaRef" title="按住拖动" class="uploadArea fixed"
+        :style="sidebarStyle" @mousedown="handleMouseDown" @click="handleClick"></div>
 
     <!-- 遮罩 -->
     <div v-if="uploadAreaData?.status" v-show="iframeShow" class="fixed inset-0 bg-black opacity-25 z-[998]" @click="hideIframe"></div>

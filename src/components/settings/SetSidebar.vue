@@ -1,5 +1,5 @@
 <template>
-    <n-modal :show="show" @update:show="(val) => emit('update:show', val)" class="w-[500px]" preset="card" :title="t('settings.sidebarSetting.title')"
+    <n-modal :show="show" @update:show="(val: boolean) => emit('update:show', val)" class="w-[500px]" preset="card" :title="t('settings.sidebarSetting.title')"
         :bordered="false">
         <div class="flex flex-row relative">
             <div class="w-[125px]">
