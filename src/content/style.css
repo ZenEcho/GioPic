@@ -1,0 +1,5 @@
+/* GioPic Content Script Custom Styles */
+/* Naive UI styles are injected via JS, this file is for extra custom overrides if needed */
+button {
+  border: none ;
+}

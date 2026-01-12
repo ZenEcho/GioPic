@@ -1,0 +1,29 @@
+.giopic-page-root {
+  position: fixed;
+  z-index: 2147483646;
+  left: 12px;
+  bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+ 
+  color: #fff;
+  font: 12px/1.2 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  
+}
+
+.giopic-page-root button {
+  border: 0;
+  border-radius: 10px;
+  padding: 6px 10px;
+  background: #409eff;
+  color: #fff;
+  cursor: pointer;
+}
+
+.giopic-page-root button:active {
+  transform: translateY(1px);
+}
+

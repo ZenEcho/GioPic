@@ -1,0 +1,17 @@
+/* 全局样式调整 */
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+button {
+  border: none ;
+}
+.dark {
+  button {
+    background-color:  rgb(75 85 99 / var(--tw-text-opacity, 1));
+  }
+}

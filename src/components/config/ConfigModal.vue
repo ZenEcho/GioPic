@@ -1,0 +1,160 @@
+<script setup lang="ts">
+import { ref, watch, computed } from 'vue'
+import { useConfigStore } from '@/stores/config'
+import { useI18n } from 'vue-i18n'
+import { useMessage } from 'naive-ui'
+import type { DriveConfig } from '@/types'
+import { DRIVE_SCHEMAS, DRIVE_TYPE_OPTIONS } from '@/constants/drive-schemas'
+import DynamicConfigForm from './DynamicConfigForm.vue'
+import CorsConfig from './CorsConfig.vue'
+import AclConfig from './AclConfig.vue'
+
+const props = defineProps<{
+  show: boolean
+  config?: DriveConfig | null
+  isEdit: boolean
+}>()
+
+const emit = defineEmits<{
+  (e: 'update:show', value: boolean): void
+  (e: 'saved'): void
+}>()
+
+const { t } = useI18n()
+const configStore = useConfigStore()
+const message = useMessage()
+const formRef = ref()
+
+const defaultForm: any = {
+  id: '',
+  name: '',
+  type: 'lsky',
+  enabled: true,
+  // Dynamic fields will be populated by v-model binding
+}
+
+const formModel = ref({ ...defaultForm })
+
+// Get current schema based on selected type
+const currentSchema = computed(() => {
+    return DRIVE_SCHEMAS[formModel.value.type] || []
+})
+
+// Generate rules dynamically based on schema
+const rules = computed(() => {
+    const baseRules: any = {
+        name: { required: true, message: () => t('config.validation.required'), trigger: 'blur' },
+        type: { required: true, message: () => t('config.validation.required'), trigger: 'blur' },
+    }
+    
+    // Add required rules from schema
+    currentSchema.value.forEach(field => {
+        if (field.required) {
+            baseRules[field.key] = {
+                required: true,
+                message: () => t('config.validation.required'),
+                trigger: 'blur'
+            }
+        }
+    })
+    
+    return baseRules
+})
+
+watch(() => props.show, (newVal) => {
+    if (newVal) {
+        if (props.isEdit && props.config) {
+            formModel.value = { ...defaultForm, ...props.config }
+        } else {
+            formModel.value = { ...defaultForm }
+            applyDefaults()
+        }
+    }
+})
+
+watch(() => formModel.value.type, () => {
+    if (!props.isEdit && props.show) {
+        applyDefaults()
+    }
+})
+
+function applyDefaults() {
+    const schema = DRIVE_SCHEMAS[formModel.value.type]
+    if (!schema) return
+    
+    schema.forEach(field => {
+        if (field.defaultValue !== undefined) {
+            formModel.value[field.key] = field.defaultValue
+        }
+    })
+}
+
+function handleSaveConfig() {
+  formRef.value?.validate((errors: any) => {
+    if (!errors) {
+      const config = { ...formModel.value }
+      if (props.isEdit) {
+        configStore.updateConfig(config.id, config as DriveConfig)
+        message.success(t('common.success'))
+      } else {
+        config.id = Date.now().toString()
+        configStore.addConfig(config as DriveConfig)
+        message.success(t('common.success'))
+      }
+      emit('saved')
+      emit('update:show', false)
+    } else {
+      message.error(t('common.error'))
+    }
+  })
+}
+
+function handleClose() {
+    emit('update:show', false)
+}
+</script>
+
+<template>
+    <n-modal 
+        :show="show" 
+        @update:show="(val: boolean) => emit('update:show', val)"
+        preset="card" 
+        :title="isEdit ? t('config.editTitle') : t('config.addTitle')" 
+        class="w-full max-w-lg rounded-2xl" 
+        :segmented="false"
+    >
+      <n-form ref="formRef" :model="formModel" :rules="rules" label-placement="left" label-width="100" require-mark-placement="right-hanging">
+        <n-form-item :label="t('config.form.name')" path="name">
+          <n-input v-model:value="formModel.name" :placeholder="t('config.form.namePlaceholder')" />
+        </n-form-item>
+        <n-form-item :label="t('config.form.type')" path="type">
+          <n-select v-model:value="formModel.type" :options="DRIVE_TYPE_OPTIONS" :disabled="isEdit" />
+        </n-form-item>
+
+        <!-- Dynamic Form -->
+        <DynamicConfigForm 
+            :schema="currentSchema"
+            v-model="formModel"
+        />
+
+        <CorsConfig 
+            v-if="(formModel.type === 'aliyun' || formModel.type === 'tencent' || formModel.type === 'aws') && isEdit"
+            :config="formModel"
+            :type="formModel.type"
+        />
+
+        <AclConfig 
+            v-if="(formModel.type === 'aliyun' || formModel.type === 'tencent' || formModel.type === 'aws') && isEdit"
+            :config="formModel"
+            :type="formModel.type"
+        />
+
+      </n-form>
+      <template #footer>
+        <div class="flex justify-end gap-2">
+          <n-button @click="handleClose" quaternary>{{ t('common.cancel') }}</n-button>
+          <n-button type="primary" @click="handleSaveConfig">{{ t('common.save') }}</n-button>
+        </div>
+      </template>
+    </n-modal>
+</template>
