@@ -63,13 +63,9 @@ export async function getManifest() {
             "storage",
             "contextMenus",
             "notifications",
-            "cookies",
-            "declarativeNetRequestWithHostAccess",
-            "declarativeNetRequestFeedback"
         ],
         host_permissions: [
             "*://*/*",
-            "*://111666.best/*"
         ],
         content_security_policy: {
             extension_pages: isDev

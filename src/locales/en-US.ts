@@ -187,6 +187,21 @@ export default {
       reset: 'Reset',
       save: 'Save',
       saveSuccess: 'Saved Successfully'
+    },
+    version: {
+      title: 'About Version',
+      current: 'Current Version',
+      latest: 'Latest Version',
+      check: 'Check for Updates',
+      checking: 'Checking...',
+      newVersion: 'New version available: {version}',
+      upToDate: 'Up to date',
+      update: 'Update',
+      failed: 'Check failed'
+    },
+    about: {
+      developer: 'Developer',
+      openSource: 'Open Source'
     }
   },
   background: {

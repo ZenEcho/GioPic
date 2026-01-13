@@ -54,6 +54,7 @@ function onFileChange(e: Event) {
             </div>
             <h2 class="text-3xl font-black text-gray-800 dark:text-white mb-3">{{ t('home.dropZone.title') }}</h2>
             <p class="text-gray-400 dark:text-gray-500 font-medium">{{ t('home.dropZone.subtitle') }}</p>
+            <p class="text-gray-400 dark:text-gray-500 font-medium">当前版本</p>
         </div>
 
         <input type="file" multiple accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" @change="onFileChange" />

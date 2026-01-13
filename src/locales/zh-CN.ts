@@ -187,6 +187,21 @@ export default {
       reset: '重置',
       save: '保存',
       saveSuccess: '保存成功'
+    },
+    version: {
+      title: '关于版本',
+      current: '当前版本',
+      latest: '最新版本',
+      check: '检查更新',
+      checking: '检查中...',
+      newVersion: '发现新版本：{version}',
+      upToDate: '已是最新版本',
+      update: '去更新',
+      failed: '检查失败'
+    },
+    about: {
+      developer: '开发者',
+      openSource: '开源地址'
     }
   },
   background: {

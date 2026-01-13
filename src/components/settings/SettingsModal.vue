@@ -56,6 +56,65 @@ async function changeLocale(lang: string) {
         console.log('Failed to notify background script', e)
     }
 }
+
+const currentVersion = ref('2.0.0')
+const latestVersion = ref('')
+const isChecking = ref(false)
+const hasUpdate = ref(false)
+const checkError = ref(false)
+
+onMounted(() => {
+    try {
+        const manifest = browser.runtime.getManifest()
+        if (manifest && manifest.version) {
+            currentVersion.value = manifest.version
+        }
+    } catch (e) {
+        console.warn('Failed to get manifest version', e)
+    }
+    checkVersion()
+})
+
+async function checkVersion() {
+    if (isChecking.value) return
+    isChecking.value = true
+    checkError.value = false
+    try {
+        let tagName = ''
+        // First try releases/latest
+        let res = await fetch('https://api.github.com/repos/ZenEcho/GioPic/releases/latest')
+        
+        if (res.ok) {
+            const data = await res.json()
+            tagName = data.tag_name
+        } else if (res.status === 404) {
+            // Fallback to tags if no release is found
+            res = await fetch('https://api.github.com/repos/ZenEcho/GioPic/tags')
+            if (res.ok) {
+                const data = await res.json()
+                if (data && data.length > 0) {
+                    tagName = data[0].name
+                } else {
+                    throw new Error('No tags found')
+                }
+            } else {
+                 throw new Error('Network response was not ok')
+            }
+        } else {
+            throw new Error('Network response was not ok')
+        }
+        
+        if (tagName) {
+             latestVersion.value = tagName.replace(/^v/, '')
+             hasUpdate.value = latestVersion.value !== currentVersion.value
+        }
+    } catch (e) {
+        console.error('Failed to check version', e)
+        checkError.value = true
+    } finally {
+        isChecking.value = false
+    }
+}
 </script>
 
 <template>
@@ -146,6 +205,54 @@ async function changeLocale(lang: string) {
                         <div v-if="themeStore.currentColor === key"
                             class="i-carbon-checkmark text-white text-lg font-bold" />
                     </button>
+                </div>
+            </div>
+            <!-- 版本 -->
+            <div>
+                <div class="text-sm font-bold text-gray-500 mb-2">{{ t('settings.version.title') }}</div>
+                <div class="p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/30">
+                    <div class="flex items-center justify-between" :class="latestVersion ? 'mb-2' : ''">
+                         <span class="text-sm font-medium text-gray-700 dark:text-gray-200">
+                            {{ t('settings.version.current') }}: v{{ currentVersion }}
+                         </span>
+                         <button 
+                            class="text-xs px-2 py-1 rounded border transition-colors"
+                            :class="isChecking ? 'text-gray-400 border-gray-200 cursor-not-allowed' : 'text-blue-500 border-blue-500 hover:bg-blue-500 hover:text-white'"
+                            :disabled="isChecking"
+                            @click="checkVersion"
+                         >
+                            {{ isChecking ? t('settings.version.checking') : t('settings.version.check') }}
+                         </button>
+                    </div>
+                    
+                    <div v-if="latestVersion" class="text-sm">
+                         <div v-if="hasUpdate" class="flex items-center justify-between text-green-600 dark:text-green-400">
+                            <span>{{ t('settings.version.newVersion', { version: latestVersion }) }}</span>
+                            <a href="https://github.com/ZenEcho/GioPic" target="_blank"
+                               class="text-xs px-2 py-1 bg-green-100 dark:bg-green-900/30 rounded hover:bg-green-200 dark:hover:bg-green-900/50 transition-colors">
+                                {{ t('settings.version.update') }}
+                            </a>
+                         </div>
+                         <div v-else class="text-gray-500">
+                            {{ t('settings.version.upToDate') }}
+                         </div>
+                    </div>
+                    <div v-if="checkError" class="text-sm text-red-500 mt-2">
+                        {{ t('settings.version.failed') }}
+                    </div>
+                    
+                    <div class="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200">{{ t('settings.about.developer') }}</span>
+                            <a href="https://github.com/ZenEcho" target="_blank" class="text-sm text-gray-500 hover:text-blue-500 transition-colors">ZenEcho</a>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200">{{ t('settings.about.openSource') }}</span>
+                            <a href="https://github.com/ZenEcho/GioPic/" target="_blank" class="text-sm text-blue-500 hover:underline flex items-center gap-1">
+                                <div class="i-carbon-logo-github" /> GitHub
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
