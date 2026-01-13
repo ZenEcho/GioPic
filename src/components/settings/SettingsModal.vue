@@ -82,14 +82,14 @@ async function checkVersion() {
     try {
         let tagName = ''
         // First try releases/latest
-        let res = await fetch('https://api.github.com/repos/ZenEcho/GioPic/releases/latest')
+        let res = await fetch('https://api.github.com/repos/ZenEcho/GioPic_Web_Extension/releases/latest')
         
         if (res.ok) {
             const data = await res.json()
             tagName = data.tag_name
         } else if (res.status === 404) {
             // Fallback to tags if no release is found
-            res = await fetch('https://api.github.com/repos/ZenEcho/GioPic/tags')
+            res = await fetch('https://api.github.com/repos/ZenEcho/GioPic_Web_Extension/tags')
             if (res.ok) {
                 const data = await res.json()
                 if (data && data.length > 0) {
@@ -228,7 +228,7 @@ async function checkVersion() {
                     <div v-if="latestVersion" class="text-sm">
                          <div v-if="hasUpdate" class="flex items-center justify-between text-green-600 dark:text-green-400">
                             <span>{{ t('settings.version.newVersion', { version: latestVersion }) }}</span>
-                            <a href="https://github.com/ZenEcho/GioPic" target="_blank"
+                            <a href="https://github.com/ZenEcho/GioPic_Web_Extension/" target="_blank"
                                class="text-xs px-2 py-1 bg-green-100 dark:bg-green-900/30 rounded hover:bg-green-200 dark:hover:bg-green-900/50 transition-colors">
                                 {{ t('settings.version.update') }}
                             </a>
@@ -248,7 +248,7 @@ async function checkVersion() {
                         </div>
                         <div class="flex items-center justify-between">
                             <span class="text-sm font-medium text-gray-700 dark:text-gray-200">{{ t('settings.about.openSource') }}</span>
-                            <a href="https://github.com/ZenEcho/GioPic/" target="_blank" class="text-sm text-blue-500 hover:underline flex items-center gap-1">
+                            <a href="https://github.com/ZenEcho/GioPic_Web_Extension/" target="_blank" class="text-sm text-blue-500 hover:underline flex items-center gap-1">
                                 <div class="i-carbon-logo-github" /> GitHub
                             </a>
                         </div>
