@@ -1,4 +1,3 @@
-import type { DriveType } from '@/types'
 
 export interface FieldSchema {
   key: string
@@ -46,7 +45,7 @@ export const DRIVE_SCHEMAS: Record<string, FieldSchema[]> = {
       key: 'expiration',
       label: 'config.form.expiration',
       type: 'select',
-      defaultValue: 'NODEL',
+      defaultValue: 'NONE',
       options: [
         { value: "NONE", label: "不删除" },
         { value: "PT5M", label: "5分钟" },
@@ -153,6 +152,8 @@ export const DRIVE_SCHEMAS: Record<string, FieldSchema[]> = {
     { key: 'bodyParams', label: 'config.form.bodyParams', type: 'kv-pairs', placeholder: 'Body' },
     { key: 'queryParams', label: 'URL参数 (Params)', type: 'kv-pairs', placeholder: 'Query' },
     { key: 'responseUrlPath', label: 'config.form.responseUrlPath', type: 'text', required: true, placeholder: 'data.url' },
+    { key: 'urlPrefix', label: 'config.form.urlPrefix', type: 'text', placeholder: 'https://cdn.example.com/' },
+    { key: 'urlSuffix', label: 'config.form.urlSuffix', type: 'text', placeholder: '?token=abc or .png' },
   ]
 
 }

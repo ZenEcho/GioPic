@@ -74,9 +74,6 @@ async function handleContextMenuClick(info: any, tab: any) {
             // 2. Download Image
             const file = await downloadImage(info.srcUrl)
             
-            // Update notification
-            // await notify('GioPic', i18n.global.t('background.uploadingTo', { count: activeConfigs.length }), 'info')
-
             // 3. Upload to all selected nodes
             const results = await Promise.allSettled(activeConfigs.map(async (config) => {
                 const uploadId = crypto.randomUUID()

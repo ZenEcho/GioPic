@@ -66,6 +66,11 @@ function handleShareAll() {
     message.success(t('common.copied'))
 }
 
+async function handleRefresh() {
+    await configStore.reload()
+    message.success(t('common.success'))
+}
+
 function handleImport() {
     showImportModal.value = true
     importJson.value = ''
@@ -103,24 +108,22 @@ function confirmImport() {
     <div class="config-list-container flex flex-col bg-white dark:bg-gray-800 rounded-[24px] p-6 shadow-sm border border-gray-100 dark:border-gray-700 flex-shrink-0 transition-all duration-300"
         :class="[
             isHovered ? 'mobile-expanded' : 'mobile-collapsed',
-            'md:w-[300px] md:h-auto md:static md:translate-y-0 md:m-6'
+            'md:w-[288px] md:h-auto md:static md:translate-y-0 md:m-6'
         ]" @mouseenter="isHovered = true" @mouseleave="isHovered = false" @click="isHovered = true">
-        <div class="flex items-center gap-2 mb-8 header-section">
-            <div class=" w-full text-2xl font-black tracking-tighter dark:text-white">{{ t('app.name') }}<span
+        <div class="flex flex-row items-center mb-8 header-section">
+            <div class=" w-full text-2xl font-black tracking-tighter dark:text-white">{{ t('app.name') }}-<span
                     class="text-primary">{{ t('app.nameSuffix') }}</span></div>
-            <div class="flex flex-col ">
-                <div class="flex flex-row ">
-                    <button v-for="(color, key) in themeColors" :key="key"
+            <div class="flex flex-row items-center">
+                <button v-for="(color, key) in themeColors" :key="key"
                         class="w-3 h-3 mx-[1px] rounded-full transition-all flex items-center justify-center hover:scale-110"
                         :style="{ backgroundColor: color.primary }" @click="themeStore.setThemeColor(key)">
                         <div v-if="themeStore.currentColor === key"
                             class="i-carbon-checkmark text-white text-lg font-bold" />
                     </button>
-                </div>
             </div>
             <div class="flex flex-row items-center gap-1">
                 <button class="text-gray-400 hover:text-primary rounded bg-transparent text-xl""
-                    @click="themeStore.isDark = !themeStore.isDark">
+                    @click=" themeStore.isDark = !themeStore.isDark">
                     <div :class="themeStore.isDark ? 'i-carbon-moon' : 'i-carbon-sun'" />
                 </button>
                 <div class="cursor-pointer" @click.stop="emit('openSettings')">
@@ -133,9 +136,17 @@ function confirmImport() {
             <div
                 class="mb-4 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider flex flex-row justify-between">
                 <div>{{ t('home.nodes') }}</div>
-                <div class="cursor-pointer" :title="t('home.shareAll')" @click.stop="handleShareAll">
-                    <div class="i-carbon-share text-gray-400 hover:text-primary transition-colors text-xl"></div>
+                <div class="flex flex-row items-center gap-3">
+                    <!-- 刷新 -->
+                    <div class="cursor-pointer" :title="t('home.refresh')" @click.stop="handleRefresh">
+                        <div class="i-carbon-update-now text-gray-400 hover:text-primary transition-colors text-xl"></div>
+                    </div>
+                    <!-- 分享全部 -->
+                    <div class="cursor-pointer" :title="t('home.shareAll')" @click.stop="handleShareAll">
+                        <div class="i-carbon-share text-gray-400 hover:text-primary transition-colors text-xl"></div>
+                    </div>
                 </div>
+
             </div>
 
             <div class="flex-1 overflow-y-auto space-y-3 pr-1 -mr-1 custom-scrollbar">
@@ -207,7 +218,7 @@ function confirmImport() {
             </n-card>
         </n-modal>
     </div>
-    
+
 </template>
 
 <style scoped>

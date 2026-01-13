@@ -89,10 +89,6 @@ export function useSidebarDrag(
     const handleGlobalMouseMove = (e: MouseEvent) => {
         if (!uploadAreaEl.value || !uploadAreaData.value || isDragging.value) return
         
-        // Optimize: throttle rect calculation or only do it if near edges
-        // But for hover detection we need it. 
-        // Let's rely on cached rect that updates occasionally or when logic suggests
-        
         const x = e.clientX
         const y = e.clientY
         const w = window.innerWidth
@@ -119,26 +115,6 @@ export function useSidebarDrag(
             }
         }
         
-        // If we are not in the activation zone or not in vertical range:
-        // Check if we are physically hovering the element (in case it's already open)
-        // Actually the `isNearEdge` check might fail if the sidebar is already expanded (width > 50).
-        // Let's use a simpler logic:
-        
-        // If mouse is OVER the element (expanded or not), show it.
-        // If mouse is NOT over the element, hide it (unless it's just near the edge trigger).
-        
-        // However, "mouseover" event on the element itself is better for keeping it open.
-        // But the element handles @mouseleave.
-        
-        // Let's stick to the original logic but cleaned up:
-        // 1. If near edge AND within vertical range -> Show
-        // 2. Else -> Hide
-        
-        // We need to know current rect to know vertical range.
-        // But rect changes as it moves.
-        // We can use uploadAreaData.location to estimate top/bottom without DOM read?
-        // top = location%, height = height%
-        // faster than getBoundingClientRect
         
         const h = window.innerHeight
         const topPx = (uploadAreaData.value.location / 100) * h
@@ -157,9 +133,6 @@ export function useSidebarDrag(
             shouldShow = x >= w - triggerWidth && isInVerticalRange
         }
         
-        // Also if we are physically hovering the element (handled by CSS/events usually, but here manual)
-        // If the element is currently visible (left=0), we should probably keep it visible if mouse is over it.
-        // But `handleGlobalMouseMove` runs on document.
         
         if (shouldShow) {
             uploadAreaEl.value.style[isLeft ? 'left' : 'right'] = '0'

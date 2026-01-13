@@ -29,6 +29,49 @@ const primaryColor = computed(() => themeStore.themeOverrides?.common?.primaryCo
 const primaryColorSuppl = computed(() => themeStore.themeOverrides?.common?.primaryColorSuppl || '#ecf5ff')
 const primaryColorHover = computed(() => themeStore.themeOverrides?.common?.primaryColorHover || '#66b1ff')
 
+// Special handling for i.111666.best images
+const imageBlobs = ref<Record<string, string>>({})
+
+const fetchImageBlob = async (url: string) => {
+    try {
+        const response = await browser.runtime.sendMessage({
+            type: 'FETCH_IMAGE_BLOB',
+            url
+        })
+        if (response) {
+            return response // response is dataUrl
+        }
+        throw new Error('No response')
+    } catch (e) {
+        console.error('Fetch image failed', e)
+        throw e
+    }
+}
+
+watch(() => props.displayList, (list) => {
+    list.forEach(async (record) => {
+        if (record.url && record.url.includes('i.111666.best') && !imageBlobs.value[record.id]) {
+            try {
+                const dataUrl = await fetchImageBlob(record.url)
+                if (dataUrl) {
+                    if (typeof dataUrl === 'string') {
+                        imageBlobs.value[record.id] = dataUrl
+                    }
+                }
+            } catch (e) {
+                console.error('Failed to load blob for', record.url, e)
+            }
+        }
+    })
+}, { immediate: true, deep: true })
+
+onUnmounted(() => {
+    // No need to revoke for dataURL, but if we used createObjectURL on frontend from base64 (to save memory), we would.
+    // Since we receive dataURL directly, we just let it be.
+    // If memory is concern, we can nullify it.
+})
+
+
 // Infinite scroll logic
 const loadTrigger = ref<HTMLElement | null>(null)
 let observer: IntersectionObserver | null = null
@@ -109,7 +152,7 @@ async function handleInject(url: string) {
                                     class="bg-transparent shadow-lg p-1 border border-gray-100 dark:border-gray-600 scale-150" />
                             </div>
 
-                            <n-image :src="record.thumbUrl || record.url" :preview-src="record.url"
+                            <n-image :src="imageBlobs[record.id] || record.thumbUrl || record.url" :preview-src="imageBlobs[record.id] || record.url"
                                 :preview-disabled="isBatchMode" lazy object-fit="cover"
                                 class="w-full h-full flex items-center justify-center"
                                 :img-props="{ class: 'w-full h-full object-cover' }">

@@ -72,7 +72,9 @@ export function useHistoryDisplay(history: Ref<UploadRecord[]>) {
     })
     
     // 当原始数据变化时（如删除），也要重置或重新计算（computed会自动处理，但如果删除了当前页的数据，可能需要检查）
-    // 这里简单处理，computed 会自动更新 displayList
+    watch(history, () => {
+        page.value = 1
+    })
 
     return {
         searchQuery,

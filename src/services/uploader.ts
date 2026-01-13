@@ -3,6 +3,7 @@ import OSS from 'ali-oss'
 import { S3Client } from '@aws-sdk/client-s3'
 import { Upload } from '@aws-sdk/lib-storage'
 import axios from 'axios'
+import { getValueByPath, parseJsonConfig } from '@/utils/common'
 
 export interface UploadResult {
   url: string
@@ -11,6 +12,16 @@ export interface UploadResult {
 }
 
 export type ProgressCallback = (percent: number) => void
+
+interface LskyStorage {
+  id: number | string
+  name: string
+}
+
+interface LskyAlbum {
+  id: number | string
+  name: string
+}
 
 export async function uploadImage(
   file: File,
@@ -47,11 +58,10 @@ export async function uploadImage(
   }
 }
 
-export async function fetchLskyStrategies(apiUrl: string, token: string, version: 'v1' | 'v2' = 'v1'): Promise<{ id: number | string, name: string }[]> {
+export async function fetchLskyStrategies(apiUrl: string, token: string, version: 'v1' | 'v2' = 'v1'): Promise<LskyStorage[]> {
   let url = apiUrl.replace(/\/$/, '')
 
   if (version === 'v2') {
-    // V2: Fetch group info which contains storages
     if (!url.endsWith('/api/v2/group')) {
       url += '/api/v2/group'
     }
@@ -70,27 +80,16 @@ export async function fetchLskyStrategies(apiUrl: string, token: string, version
         throw new Error(data.message || 'Fetch strategies failed')
       }
 
-      // V2 returns storages in data.group.storages or data.storages?
-      // User provided example: data: { group: { storages: [...] } }
-      // But also note that permissions might be restricted.
-      // Based on user provided JSON structure:
-      // "data": { "group": { ..., "storages": [ { "id": 1, "name": "..." } ] } }
       const storages = data.data?.storages || []
-      console.log('Lsky V2 storages:', storages);
-
-
       return storages.map((s: any) => ({
         id: s.id,
         name: s.name
       }))
-
-
     } catch (e) {
       console.error('Fetch Lsky V2 strategies failed', e)
       return []
     }
   } else {
-    // V1: Fetch strategies
     if (!url.endsWith('/api/v1/strategies')) {
       url += '/api/v1/strategies'
     }
@@ -108,9 +107,6 @@ export async function fetchLskyStrategies(apiUrl: string, token: string, version
         throw new Error(data.message || 'Fetch strategies failed')
       }
 
-      // V1 usually returns data: { strategies: [...] } or just array in data
-      // Assuming standard Lsky V1 response structure which is usually consistent with V2 in `data` wrapper
-      // Lsky V1 strategies endpoint typically returns a list of strategies
       const strategies = Array.isArray(data.data) ? data.data : (data.data?.strategies || [])
       return strategies.map((s: any) => ({
         id: s.id,
@@ -123,7 +119,7 @@ export async function fetchLskyStrategies(apiUrl: string, token: string, version
   }
 }
 
-export async function fetchLskyAlbums(apiUrl: string, token: string, version: 'v1' | 'v2' = 'v1'): Promise<{ id: number | string, name: string }[]> {
+export async function fetchLskyAlbums(apiUrl: string, token: string, version: 'v1' | 'v2' = 'v1'): Promise<LskyAlbum[]> {
   let url = apiUrl.replace(/\/$/, '')
 
   if (version === 'v2') {
@@ -155,7 +151,6 @@ export async function fetchLskyAlbums(apiUrl: string, token: string, version: 'v
       return []
     }
   } else {
-    // V1
     if (!url.endsWith('/api/v1/albums')) {
       url += '/api/v1/albums'
     }
@@ -173,7 +168,6 @@ export async function fetchLskyAlbums(apiUrl: string, token: string, version: 'v
         throw new Error(data.message || 'Fetch albums failed')
       }
 
-      // V1: { status: true, data: { data: [...] } }
       const albums = data.data?.data || []
       return albums.map((a: any) => ({
         id: a.id,
@@ -186,7 +180,7 @@ export async function fetchLskyAlbums(apiUrl: string, token: string, version: 'v
   }
 }
 
-// 通用 Fetch 上传
+// Common Fetch Upload
 async function fetchUpload(
   url: string,
   formData: FormData,
@@ -206,59 +200,25 @@ async function fetchUpload(
       }
     })
 
-    const data = res.data
-
-    // 某些接口可能返回200但内容是错误的
-    if (data && typeof data === 'object') {
-
-    }
-
-    return data
+    return res.data
   } catch (error: any) {
     console.error('Fetch error:', error)
-    // Axios error handling
     if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
       const data = error.response.data
       const errorMessage = data?.message || data?.error?.message || data?.msg || data?.error || `Upload failed: ${error.response.status} ${error.response.statusText}`
       throw new Error(errorMessage)
     } else if (error.request) {
-      // The request was made but no response was received
       throw new Error('No response received from server')
     } else {
-      // Something happened in setting up the request that triggered an Error
       throw new Error(error.message || 'Network error')
     }
   }
 }
 
-function getValueByPath(obj: any, path: string): any {
-  return path.split('.').reduce((acc, part) => acc && acc[part], obj)
-}
-
 async function uploadCustom(file: File, config: CustomConfig, onProgress: ProgressCallback): Promise<UploadResult> {
-  // Headers
-  const parseConfigJson = (jsonStr: string | undefined): Record<string, any> => {
-    if (!jsonStr) return {}
-    try {
-      const parsed = JSON.parse(jsonStr)
-      if (Array.isArray(parsed)) {
-        return parsed.reduce((acc, curr) => {
-          if (curr.key) acc[curr.key] = curr.value
-          return acc
-        }, {})
-      }
-      return parsed
-    } catch (e) {
-      console.warn('Failed to parse JSON config', e)
-      return {}
-    }
-  }
-
-  const headers = parseConfigJson(config.headers)
-  const queryParams = parseConfigJson(config.queryParams)
-  const bodyParams = parseConfigJson(config.bodyParams)
+  const headers = parseJsonConfig(config.headers)
+  const queryParams = parseJsonConfig(config.queryParams)
+  const bodyParams = parseJsonConfig(config.bodyParams)
 
   let data: any
   const fileParamName = config.fileParamName || 'file'
@@ -268,7 +228,6 @@ async function uploadCustom(file: File, config: CustomConfig, onProgress: Progre
     const contentBase64 = await new Promise<string>((resolve, reject) => {
       reader.onload = (e) => {
         const result = e.target?.result as string
-        // Default to just the content for JSON uploads usually
         const base64 = result.split(',')[1]
         resolve(base64 || '')
       }
@@ -281,12 +240,10 @@ async function uploadCustom(file: File, config: CustomConfig, onProgress: Progre
       [fileParamName]: contentBase64
     }
     
-    // Ensure Content-Type is json
     if (!headers['Content-Type'] && !headers['content-type']) {
       headers['Content-Type'] = 'application/json'
     }
   } else {
-    // FormData
     data = new FormData()
     data.append(fileParamName, file)
     Object.keys(bodyParams).forEach(key => {
@@ -298,7 +255,7 @@ async function uploadCustom(file: File, config: CustomConfig, onProgress: Progre
     const response = await axios({
       method: config.method || 'POST',
       url: config.apiUrl,
-      params: queryParams, // Add query params here
+      params: queryParams,
       headers,
       data,
       onUploadProgress: (progressEvent) => {
@@ -309,9 +266,35 @@ async function uploadCustom(file: File, config: CustomConfig, onProgress: Progre
       }
     })
 
-    const url = getValueByPath(response.data, config.responseUrlPath)
+    let url = getValueByPath(response.data, config.responseUrlPath)
     if (!url) {
       throw new Error(`Cannot find URL at path "${config.responseUrlPath}" in response`)
+    }
+
+    try {
+      const baseUrl = config.urlPrefix || config.apiUrl
+      let finalUrl = String(url)
+
+      const urlObj = new URL(finalUrl, baseUrl)
+      finalUrl = urlObj.href
+
+      if (config.urlSuffix) {
+        finalUrl += config.urlSuffix
+      }
+      
+      url = finalUrl
+    } catch (e) {
+      console.warn('Failed to resolve URL:', e)
+      let res = String(url)
+      if (config.urlPrefix && !res.startsWith('http')) {
+         const prefix = config.urlPrefix.endsWith('/') ? config.urlPrefix : config.urlPrefix + '/'
+         const path = res.startsWith('/') ? res.slice(1) : res
+         res = prefix + path
+      }
+      if (config.urlSuffix) {
+        res += config.urlSuffix
+      }
+      url = res
     }
 
     return { url }
@@ -338,10 +321,6 @@ async function uploadLsky(file: File, config: WebUploaderConfig, onProgress: Pro
     // Lsky V2 upload params
     formData.append('file', file)
     if (config.strategyId) {
-      // V2 uses 'strategy_id' parameter based on official docs or user feedback?
-      // User update: V2 uses 'storage_id' for storage strategy? Or maybe just 'strategy_id' as before?
-      // Wait, user said "v2上传接口 body参数里file和storage_id是必须的". 
-      // So we must use 'storage_id' instead of 'strategy_id'.
       formData.append('storage_id', config.strategyId)
     }
     if (config.albumId) {
@@ -349,7 +328,6 @@ async function uploadLsky(file: File, config: WebUploaderConfig, onProgress: Pro
     }
     if (config.permission) {
       // V2: is_public (true/false)
-      // Use 1/0 to satisfy loose boolean validation in FormData
       const isPublic = config.permission === '1' ? '1' : '0'
       formData.append('is_public', isPublic)
     }
@@ -525,8 +503,6 @@ async function uploadHellohao(file: File, config: WebUploaderConfig, onProgress:
   if (config.source) formData.append('source', config.source)
 
   let url = config.apiUrl.replace(/\/$/, '')
-  // Hellohao usually ends with /api/uploadbytoken/
-  // But checking user input is safer.
   if (!url.includes('/api/')) {
     url += '/api/uploadbytoken/'
   } else if (!url.endsWith('/')) {
@@ -569,8 +545,7 @@ async function uploadImgur(file: File, config: WebUploaderConfig, onProgress: Pr
 }
 
 async function uploadAliyun(file: File, config: AliyunConfig, onProgress: ProgressCallback): Promise<UploadResult> {
-  // Use endpoint directly if provided, falling back to region extraction if needed
-  // ali-oss supports 'endpoint' option.
+
   const client = new OSS({
     // region: config.endpoint.split('.')[0], 
     endpoint: config.endpoint,
@@ -632,8 +607,6 @@ async function uploadGithub(file: File, config: any, onProgress: ProgressCallbac
   // Clean repo string (remove whitespace)
   const repo = config.repo.trim()
 
-  // Encode path segments to handle special characters (spaces, Chinese, etc.)
-  // We encode the file name and directory segments separately
   const encodedDir = dir.split('/').map((segment: string) => segment ? encodeURIComponent(segment) : '').join('/')
   const encodedFilename = `${encodedDir}${encodeURIComponent(file.name)}`
 
@@ -817,12 +790,9 @@ async function uploadS3(file: File, config: S3Config, onProgress: ProgressCallba
     url = `${prefix}${domain}/${key}`
   } else {
     if (!isAws && endpoint) {
-      // For compatible services without custom domain, use path style URL
-      // e.g. https://minio.example.com/bucket/key
       const cleanEndpoint = endpoint.replace(/\/$/, '')
       url = `${cleanEndpoint}/${config.bucket}/${key}`
     } else {
-      // Default to AWS S3 Virtual Hosted Style
       url = `https://${config.bucket}.s3.${config.region}.amazonaws.com/${key}`
     }
   }

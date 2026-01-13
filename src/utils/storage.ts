@@ -25,4 +25,13 @@ export const db = {
   async keys(): Promise<IDBValidKey[]> {
     return (await dbPromise).getAllKeys(STORE_NAME)
   },
+  async getFromExternal<T = any>(dbName: string, storeName: string): Promise<T[]> {
+    try {
+      const externalDb = await openDB(dbName)
+      return await externalDb.getAll(storeName)
+    } catch (error) {
+      console.error(`Failed to get data from external DB ${dbName}/${storeName}:`, error)
+      return []
+    }
+  },
 }

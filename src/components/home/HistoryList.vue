@@ -70,7 +70,7 @@ function copyLink(url: string, thumbUrl?: string) {
 </script>
 
 <template>
- <div   class="m-4 mb-18 md:m-6 flex flex-col bg-white dark:bg-gray-800 rounded-[24px] p-6 shadow-sm border border-gray-100 dark:border-gray-700 flex-shrink-0 transition-colors duration-300 min-h-[180px] overflow-hidden">
+ <div   class="min-h-[180px] p-6 m-4 md:m-6 flex flex-col bg-white dark:bg-gray-800 rounded-[24px] shadow-sm border border-gray-100 dark:border-gray-700 flex-shrink-0 transition-colors duration-300 overflow-hidden">
             <div class="flex items-center justify-between mb-4 flex-shrink-0">
                 <div class="text-lg font-black italic text-gray-800 dark:text-white">{{ t('home.history.uploadQueue') }}
                 </div>
@@ -94,7 +94,7 @@ function copyLink(url: string, thumbUrl?: string) {
                 </div>
             </div>
 
-            <div class=" md:w-[280px] flex-1 overflow-y-auto space-y-4 pr-1 -mr-1 custom-scrollbar">
+            <div class=" md:w-[288px] flex-1 overflow-y-auto space-y-4 pr-1 -mr-1 custom-scrollbar">
                 <!-- 正在上传的队列 -->
                 <div v-for="item in props.uploadQueue" :key="item.id"
                     class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-3 border border-gray-100 dark:border-gray-700 relative group">

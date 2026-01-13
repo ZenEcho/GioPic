@@ -28,3 +28,25 @@ export async function copyToClipboard(text: string): Promise<void> {
         throw err
     }
 }
+
+export function getValueByPath(obj: any, path: string): any {
+    if (!path) return undefined
+    return path.split('.').reduce((acc, part) => acc && acc[part], obj)
+}
+
+export function parseJsonConfig(jsonStr: string | undefined): Record<string, any> {
+    if (!jsonStr) return {}
+    try {
+        const parsed = JSON.parse(jsonStr)
+        if (Array.isArray(parsed)) {
+            return parsed.reduce((acc, curr) => {
+                if (curr.key) acc[curr.key] = curr.value
+                return acc
+            }, {})
+        }
+        return parsed
+    } catch (e) {
+        console.warn('Failed to parse JSON config', e)
+        return {}
+    }
+}

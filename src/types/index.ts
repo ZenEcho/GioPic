@@ -1,17 +1,17 @@
-export type DriveType = 'lsky' | 'easyimages' | 'chevereto' | 'aliyun' | 'aws' | 'tencent' | 'imgurl' | 'smms' | 'hellohao' | 'imgur';
+export type DriveType = 'lsky' | 'easyimages' | 'chevereto' | 'imgurl' | 'aliyun' | 'aws' | 'tencent' | 'imgurl' | 'smms' | 'hellohao' | 'imgur' | 'custom' ;
 
 export interface BaseConfig {
   id: string;
   name: string;
   type: DriveType;
-  enabled: boolean;
+  enabled: boolean; // 是否启用
 }
 
 export interface WebUploaderConfig extends BaseConfig {
-  type: 'lsky' | 'easyimages' | 'chevereto' | 'imgurl' | 'smms' | 'hellohao' | 'imgur';
+  type: 'lsky' | 'easyimages' | 'chevereto' | 'imgurl' | 'smms' | 'hellohao' | 'imgur' ;
   apiUrl: string;
   token: string;
-  strategyId?: string;
+  strategyId?: string; 
   version?: 'v1' | 'v2';
   // Extra fields for specific uploaders
   uid?: string; // For ImgURL
@@ -72,6 +72,8 @@ export interface CustomConfig extends Omit<BaseConfig, 'type'> {
   bodyParams?: string; // JSON string
   queryParams?: string; // JSON string
   responseUrlPath: string;
+  urlPrefix?: string; // 自定义URL前缀，例如https://example.com/
+  urlSuffix?: string; // 自定义URL后缀，例如.jpg
 }
 
 export type DriveConfig = WebUploaderConfig | AliyunConfig | S3Config | TencentConfig | GithubConfig | CustomConfig;

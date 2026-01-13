@@ -1,6 +1,6 @@
 export default {
   app: {
-    name: 'GIOPIC-',
+    name: 'GIOPIC',
     nameSuffix: 'SYNC',
   },
   providers: {
@@ -28,6 +28,7 @@ export default {
     nodes: 'Nodes',
     addNode: 'Add New Interface',
     noNodes: 'No nodes, please add',
+    refresh: 'Refresh',
     dropZone: {
       title: 'Drop Images Here',
       subtitle: 'Multi-image parallel upload, auto-distribute to selected nodes',
@@ -99,6 +100,7 @@ export default {
       noConfig: 'No CORS configuration found',
       getFailed: 'Failed to get CORS',
       setFailed: 'Failed to set CORS',
+      setSuccess: 'Successfully set CORS',
     },
     acl: {
       title: '{type} ACL Settings',
@@ -145,6 +147,8 @@ export default {
       headers: 'Headers (JSON)',
       bodyParams: 'Body Params (JSON)',
       responseUrlPath: 'URL Path (e.g. data.url)',
+      urlPrefix: 'URL Prefix (Optional)',
+      urlSuffix: 'URL Suffix (Optional)',
     },
     validation: {
       required: 'Required',
@@ -227,5 +231,29 @@ export default {
       done: 'DONE',
       err: 'ERR',
     }
-  }
-}
+  },
+   detector: {
+     foundTitle: 'Found: {appName} Configurable Image Host',
+     lskyContent: 'Click [Create Token] button, then on [Success] page click [Add to {appName}] button to load into {appName} extension.',
+     lskyOpenContent: 'Enter email and password, then click [Add to {appName}] button to configure extension.',
+     easyimagesOpenContent: 'Enter email and password, then click [Add to {appName}] button to configure extension.',
+     cheveretoContent: 'Click [Regenerate Key] button, then on [Success] page click [Add to {appName}] button to load into {appName} extension.',
+     best16Content: 'Click [Add to {appName}] button to load into {appName} extension.',
+     
+     addToApp: 'Add to {appName}',
+     ignore: 'Don\'t ask again for this site',
+     permissionTitle: 'Permission Request',
+     permissionContentLine1: 'Allow [{appName}] to use this site\'s cookie to get token?',
+     permissionContentLine2: 'Note: This involves privacy. Ignore if you disagree.',
+     allowAndGet: 'Allow and Get Token',
+     reject: 'Cancel',
+     email: 'Email',
+     password: 'Password',
+     failed: 'Failed',
+     failedContent: 'Check developer console (F12) for details',
+     configName: 'Config',
+     getTokenFailed: 'Failed to get Token, please click [Create Token] button first',
+     addSuccess: 'Added Successfully',
+     addFailed: 'Add Failed',
+   }
+ }

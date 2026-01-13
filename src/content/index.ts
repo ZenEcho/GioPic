@@ -2,6 +2,7 @@ import { mountComponent } from './utils/mount'
 import NotificationView from './components/NotificationView.vue'
 import WebSidebar from './components/WebSidebar.vue'
 import UploadList from './components/UploadList.vue'
+import TokenDetector from './components/TokenDetector.vue'
 import browser from 'webextension-polyfill'
 import 'virtual:uno.css'
 import './style.css'
@@ -78,4 +79,12 @@ mountComponent(
     WebSidebar,
     'giopic-sidebar-container',
     true
+)
+
+mountComponent(
+    TokenDetector,
+    'giopic-token-detector',
+    true,
+    {},
+    true // Use Provider for Message/Dialog
 )

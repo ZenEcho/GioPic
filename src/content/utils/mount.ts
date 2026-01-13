@@ -1,5 +1,5 @@
 import { createApp, h, type Component } from 'vue'
-import { NNotificationProvider } from 'naive-ui'
+import { NNotificationProvider, NMessageProvider, NDialogProvider } from 'naive-ui'
 import browser from 'webextension-polyfill'
 import i18n from '@/i18n'
 
@@ -47,7 +47,11 @@ export function mountComponent(
                     right: '20px'
                 }
             }, {
-                default: () => h(component, props)
+                default: () => h(NMessageProvider, {}, {
+                    default: () => h(NDialogProvider, {}, {
+                        default: () => h(component, props)
+                    })
+                })
             })
         }
         app = createApp(Wrapper)

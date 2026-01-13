@@ -1,6 +1,6 @@
 export default {
   app: {
-    name: 'GIOPIC-',
+    name: 'GIOPIC',
     nameSuffix: 'SYNC',
   },
   providers: {
@@ -28,6 +28,7 @@ export default {
     nodes: '分发节点',
     addNode: '添加新接口',
     noNodes: '暂无节点，请添加',
+    refresh: '刷新',
     dropZone: {
       title: '释放图片到此处',
       subtitle: '支持多图并行上传，自动分发至已选节点',
@@ -99,6 +100,7 @@ export default {
       noConfig: '未找到 CORS 配置',
       getFailed: '获取 CORS 失败',
       setFailed: '设置 CORS 失败',
+      setSuccess: '设置 CORS 成功',
     },
     acl: {
       title: '{type} ACL 访问控制',
@@ -145,6 +147,8 @@ export default {
       headers: '请求头 (JSON)',
       bodyParams: 'Body参数 (JSON)',
       responseUrlPath: 'URL路径 (例如 data.url)',
+      urlPrefix: 'URL前缀 (可选)',
+      urlSuffix: 'URL后缀 (可选)',
     },
     validation: {
       required: '此项必填',
@@ -227,5 +231,29 @@ export default {
       done: '完成',
       err: '错误',
     }
+  },
+  detector: {
+    foundTitle: '发现：{appName} 可配置图床',
+    lskyContent: '点击【创建 Token】按钮，在【创建成功】页点击【添加到 {appName}】按钮，可加载到 {appName} 扩展。',
+    lskyOpenContent: '填入邮箱和密码后，点击【添加到 {appName}】按钮，可一键配置扩展',
+    easyimagesOpenContent: '填入邮箱和密码后，点击【添加到 {appName}】按钮，可一键配置扩展',
+    cheveretoContent: '点击【重新生成密钥】按钮，在【创建成功】页点击【添加到 {appName}】按钮，可加载到 {appName} 扩展。',
+    best16Content: '点击【添加到 {appName}】按钮，可加载到 {appName} 扩展。',
+
+    addToApp: '添加到 {appName}',
+    ignore: '本站不再提示',
+    permissionTitle: '权限调用询问',
+    permissionContentLine1: '是否允许【{appName}】调用本站的 cookie，用于一键获取 token？',
+    permissionContentLine2: '注意：本次调用将涉及您的隐私，如不同意请忽略。',
+    allowAndGet: '允许并获取token',
+    reject: '取消',
+    email: '邮箱',
+    password: '密码',
+    failed: '获取失败',
+    failedContent: '详细报错请打开开发者控制台(F12)查看',
+    configName: '配置',
+    getTokenFailed: '获取 Token 失败，请点击【创建 Token】按钮创建Token',
+    addSuccess: '添加成功',
+    addFailed: '添加失败',
   }
 }

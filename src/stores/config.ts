@@ -72,12 +72,32 @@ export const useConfigStore = defineStore('config', () => {
     }
   }
 
+  async function reload() {
+    try {
+      const [storedConfigs, storedSelection] = await Promise.all([
+        db.get<DriveConfig[]>(STORAGE_KEY),
+        db.get<string[]>(SELECTED_IDS_KEY)
+      ])
+      configs.value = storedConfigs || []
+      if (storedSelection !== undefined) {
+        selectedIds.value = storedSelection
+      } else if (configs.value.length > 0) {
+        selectedIds.value = configs.value.map(c => c.id)
+      } else {
+        selectedIds.value = []
+      }
+    } catch (e) {
+      console.error('Failed to reload data from db', e)
+    }
+  }
+
   return {
     configs,
     selectedIds,
     addConfig,
     updateConfig,
     removeConfig,
-    toggleEnabled
+    toggleEnabled,
+    reload
   }
 })

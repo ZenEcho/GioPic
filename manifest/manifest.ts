@@ -63,6 +63,9 @@ export async function getManifest() {
             "storage",
             "contextMenus",
             "notifications",
+            "cookies",
+            "declarativeNetRequestWithHostAccess",
+            "declarativeNetRequestFeedback"
         ],
         host_permissions: [
             "*://*/*",
