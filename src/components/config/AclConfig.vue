@@ -82,28 +82,32 @@ async function handleSetAcl() {
 </script>
 
 <template>
-    <div class="mt-4 p-4 border rounded bg-gray-50 dark:bg-gray-800">
-        <h3 class="text-base font-medium mb-4 flex items-center gap-2">
+    <div class="mt-4 p-4 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+        <h3 class="text-sm font-bold text-gray-800 dark:text-gray-200 mb-4 flex items-center gap-2">
             {{ t('config.acl.title', { type: typeName }) }}
             <n-tooltip trigger="hover">
                 <template #trigger>
-                    <div class="i-carbon-help text-gray-400 cursor-pointer"></div>
+                    <div class="i-carbon-help text-gray-400 cursor-pointer text-xs"></div>
                 </template>
                 {{ t('config.acl.desc') }}
             </n-tooltip>
         </h3>
         
-        <n-form-item :label="t('config.acl.permission')" label-placement="left" :show-feedback="false" class="mb-4">
+        <n-form-item :label="t('config.acl.permission')" label-placement="top" :show-feedback="false">
              <n-select v-model:value="acl" :options="aclOptions" />
         </n-form-item>
 
-        <div class="flex gap-2 justify-end">
-             <n-button secondary type="info" @click="handleGetAcl" :loading="loading">
+        <div class="flex gap-2 justify-end mt-4 pt-3 border-t border-gray-200 dark:border-gray-700/50">
+             <button @click="handleGetAcl" :disabled="loading"
+                class="giopic-link-btn px-3 h-8 text-xs font-bold rounded bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/30 transition-colors flex items-center gap-1">
+                <div class="i-carbon-cloud-download" />
                 {{ t('config.acl.get') }}
-            </n-button>
-            <n-button type="success" @click="handleSetAcl" :loading="loading">
+            </button>
+            <button @click="handleSetAcl" :disabled="loading"
+                class="giopic-link-btn px-3 h-8 text-xs font-bold rounded bg-green-50 text-green-600 hover:bg-green-100 dark:bg-green-900/20 dark:text-green-400 dark:hover:bg-green-900/30 transition-colors flex items-center gap-1">
+                <div class="i-carbon-cloud-upload" />
                 {{ t('config.acl.set') }}
-            </n-button>
+            </button>
         </div>
     </div>
 </template>

@@ -136,71 +136,92 @@ async function handleInject(url: string) {
         <!-- List -->
         <div v-if="displayList.length > 0" class="overflow-y-auto custom-scrollbar flex-1">
             <n-image-group>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 content-start">
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 content-start">
                     <div v-for="record in displayList" :key="record.id"
-                        class="group relative bg-white dark:bg-gray-800 transition-all rounded-xl p-3 flex flex-col"
-                        :class="isBatchMode && selectedIds.has(record.id) ? 'card-selected shadow-md' : 'border border-gray-100 dark:border-gray-700 hover:border-primary-200 hover:shadow-md'"
+                        class="group relative bg-gray-50 dark:bg-gray-700/30 rounded-xl overflow-hidden aspect-square border border-gray-100 dark:border-gray-700 transition-all duration-300"
+                        :class="isBatchMode && selectedIds.has(record.id) ? 'ring-2 ring-primary border-primary shadow-md' : 'hover:shadow-lg hover:border-primary-200 dark:hover:border-gray-600'"
                         @click="isBatchMode ? emit('toggleSelection', record.id) : null">
                         
-                        <div class="aspect-video bg-gray-50 dark:bg-gray-700 rounded-lg overflow-hidden border border-gray-100 dark:border-gray-600 mb-3 relative group-hover:shadow-sm transition-shadow">
-                            <!-- Selection Checkbox -->
-                            <div v-if="isBatchMode"
-                                class="absolute top-1/2 left-1/2 z-10 transition-all transform -translate-x-1/2 -translate-y-1/2"
-                                @click.stop>
-                                <n-checkbox size="large" :checked="selectedIds.has(record.id)"
-                                    @update:checked="emit('toggleSelection', record.id)"
-                                    class="bg-transparent shadow-lg p-1 border border-gray-100 dark:border-gray-600 scale-150" />
-                            </div>
-
+                        <!-- Image Container -->
+                        <div class="w-full h-full relative">
                             <n-image :src="imageBlobs[record.id] || record.thumbUrl || record.url" :preview-src="imageBlobs[record.id] || record.url"
                                 :preview-disabled="isBatchMode" lazy object-fit="cover"
                                 class="w-full h-full flex items-center justify-center"
-                                :img-props="{ class: 'w-full h-full object-cover' }">
+                                :img-props="{ class: 'w-full h-full object-cover transition-transform duration-500 group-hover:scale-105' }">
                                 <template #placeholder>
                                     <div class="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-800 text-gray-300">
                                         <div class="i-carbon-image text-2xl" />
                                     </div>
                                 </template>
                             </n-image>
-                            
-                            <!-- Delete button -->
-                            <button
-                                class="absolute top-2 right-2 w-8 h-8 bg-red-500 text-white rounded-lg opacity-0 group-hover:opacity-100 hover:bg-red-600 flex items-center justify-center transition-all shadow-md transform translate-x-2 -translate-y-2 group-hover:translate-x-0 group-hover:translate-y-0 z-10"
-                                @click.stop="emit('deleteRecord', record.id)">
-                                <div class="i-carbon-trash-can text-sm" />
-                            </button>
-                        </div>
 
-                        <div class="flex-1 flex flex-col justify-between">
-                            <div class="mb-3">
-                                <div class="font-bold text-sm text-gray-800 dark:text-gray-200 truncate mb-1"
-                                    :title="record.filename">{{ record.filename }}</div>
-                                <div class="text-xs text-gray-400 dark:text-gray-500 flex items-center justify-between">
-                                    <div class="flex items-center gap-1.5">
-                                        <span class="w-2 h-2 rounded-full"
-                                            :class="record.status === 'success' ? 'bg-green-500' : 'bg-red-500'"></span>
-                                        {{ record.configName }}
-                                    </div>
-                                    <span class="font-mono opacity-70">{{ new Date(record.createdAt).toLocaleString() }}</span>
+                            <!-- Overlay Mask (Hover or Selected) -->
+                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                                 :class="{ 'opacity-100 bg-primary/10': isBatchMode && selectedIds.has(record.id) }">
+                            </div>
+
+                            <!-- Batch Mode Checkbox (Top Left) -->
+                            <div v-if="isBatchMode"
+                                class="absolute top-2 left-2 z-20 transition-transform duration-200"
+                                :class="selectedIds.has(record.id) ? 'scale-100' : 'scale-90 opacity-80 hover:opacity-100 hover:scale-100'"
+                                @click.stop>
+                                <n-checkbox size="large" :checked="selectedIds.has(record.id)"
+                                    @update:checked="emit('toggleSelection', record.id)"
+                                    class="bg-white dark:bg-gray-800 rounded-lg p-0.5 shadow-md border border-gray-200 dark:border-gray-600" />
+                            </div>
+
+                            <!-- Action Buttons Overlay (Center/Bottom) -->
+                            <div class="absolute inset-0 flex flex-col items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 z-10 pointer-events-auto"
+                                 v-if="!isBatchMode">
+                                
+                                <!-- Main Actions Row -->
+                                <div class="flex items-center gap-2">
+                                    <button
+                                        class="giopic-icon-btn w-9 h-9 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-200 hover:text-primary hover:scale-110 shadow-lg"
+                                        :title="t('common.inject')"
+                                        @click.stop="handleInject(record.url)">
+                                        <div class="i-carbon-magic-wand text-lg" />
+                                    </button>
+                                    <button
+                                        class="giopic-icon-btn w-9 h-9 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-200 hover:text-primary hover:scale-110 shadow-lg"
+                                        :title="t('common.copy')"
+                                        @click.stop="handleCopy(formatLink(record.url, copyFormat))">
+                                        <div class="i-carbon-copy text-lg" />
+                                    </button>
+                                </div>
+
+                                <!-- Secondary Actions Row -->
+                                <div class="flex items-center gap-2 mt-1">
+                                    <a :href="record.url" target="_blank"
+                                        class="giopic-icon-btn w-8 h-8 bg-white/90 dark:bg-gray-800/90 text-gray-500 dark:text-gray-400 hover:text-primary hover:scale-110 shadow-md"
+                                        :title="t('common.open')"
+                                        @click.stop>
+                                        <div class="i-carbon-launch" />
+                                    </a>
+                                    <button
+                                        class="giopic-icon-btn w-8 h-8 bg-white/90 dark:bg-gray-800/90 text-gray-500 dark:text-gray-400 hover:text-red-500 hover:scale-110 shadow-md"
+                                        :title="t('common.delete')"
+                                        @click.stop="emit('deleteRecord', record.id)">
+                                        <div class="i-carbon-trash-can" />
+                                    </button>
                                 </div>
                             </div>
 
-                            <div class="flex gap-2">
-                                <button
-                                    class="px-3 bg-gray-100 dark:bg-primary-900/20 text-primary hover:bg-primary hover:text-white text-xs font-bold py-2 rounded-lg transition-colors flex items-center justify-center gap-1.5"
-                                    :title="t('common.inject')"
-                                    @click.stop="handleInject(record.url)">
-                                    <div class="i-carbon-magic-wand" />
-                                </button>
-                                <button
-                                    class="flex-1 bg-gray-100 dark:bg-primary-900/20 text-primary hover:bg-primary hover:text-white text-xs font-bold py-2 rounded-lg transition-colors flex items-center justify-center gap-1.5"
-                                    @click.stop="handleCopy(formatLink(record.url, copyFormat))">
-                                    <div class="i-carbon-copy" /> {{ t('common.copy') }}
-                                </button>
-                                <a :href="record.url" target="_blank"
-                                    class="px-3 bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg flex items-center justify-center transition-colors">
-                                    <div class="i-carbon-launch" />
-                                </a>
+                            <!-- Bottom Info Bar (Always visible but minimal) -->
+                            <div class="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none">
+                                <div class="text-white text-xs font-bold truncate px-1 text-shadow-sm">
+                                    {{ record.filename }}
+                                </div>
+                                <div class="flex items-center justify-between px-1 mt-0.5 opacity-80">
+                                    <div class="flex items-center gap-1 text-[10px] text-white/90">
+                                        <div class="w-1.5 h-1.5 rounded-full shadow-sm"
+                                            :class="record.status === 'success' ? 'bg-green-400' : 'bg-red-400'"></div>
+                                        <span class="truncate max-w-[60px]">{{ record.configName }}</span>
+                                    </div>
+                                    <span class="text-[10px] text-white/70 font-mono">
+                                         {{ new Date(record.createdAt).toLocaleString() }}
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -208,17 +229,19 @@ async function handleInject(url: string) {
             </n-image-group>
 
             <!-- Load more trigger -->
-            <div v-if="hasMore" ref="loadTrigger" class="py-4 flex justify-center">
+            <div v-if="hasMore" ref="loadTrigger" class="py-6 flex justify-center">
                 <n-spin size="small" />
             </div>
-            <div v-else-if="displayList.length > 0" class="py-4 text-center text-xs text-gray-400">
+            <div v-else-if="displayList.length > 0" class="py-6 text-center text-xs text-gray-400 dark:text-gray-500 border-t border-dashed border-gray-100 dark:border-gray-700 mt-4">
                 {{ t('home.history.noMore') }}
             </div>
         </div>
 
         <!-- Empty State -->
         <div v-else class="flex-1 flex flex-col items-center justify-center text-gray-300 dark:text-gray-600">
-            <div class="i-carbon-image-search text-6xl mb-4 opacity-50" />
+            <div class="w-24 h-24 bg-gray-50 dark:bg-gray-800 rounded-full flex items-center justify-center mb-4">
+                <div class="i-carbon-image-search text-4xl opacity-50" />
+            </div>
             <div class="text-sm font-medium">{{ t('home.history.empty') }}</div>
         </div>
         
@@ -281,7 +304,7 @@ async function handleInject(url: string) {
     border-color: v-bind(primaryColorSuppl);
 }
 
-.card-selected {
-    border: 1px solid v-bind(primaryColor);
+.text-shadow-sm {
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
 }
 </style>

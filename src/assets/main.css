@@ -8,10 +8,44 @@ body,
 }
 
 button {
-  border: none ;
+  border: none;
+  background: none;
 }
-.dark {
-  button {
-    background-color:  rgb(75 85 99 / var(--tw-text-opacity, 1));
-  }
+
+.giopic-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 9999px;
+  transition: color 0.15s ease, background-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.giopic-icon-btn:hover {
+  transform: translateY(-1px);
+}
+
+.giopic-link-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 0.75rem;
+  transition: color 0.15s ease, background-color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.giopic-link-btn-primary {
+  border-width: 1px;
+}
+
+.giopic-text-link {
+  cursor: pointer;
+  transition: color 0.15s ease, text-decoration-color 0.15s ease;
+  text-decoration: none;
+}
+
+.giopic-text-link:hover {
+  text-decoration: underline;
 }

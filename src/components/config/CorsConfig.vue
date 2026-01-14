@@ -122,51 +122,60 @@ function handleReset() {
 </script>
 
 <template>
-    <div class="mt-4 p-4 border rounded bg-gray-50 dark:bg-gray-800">
-        <h3 class="text-base font-medium mb-4 flex items-center gap-2">
+    <div class="mt-4 p-4 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+        <h3 class="text-sm font-bold text-gray-800 dark:text-gray-200 mb-4 flex items-center gap-2">
             {{ t('config.cors.title', { type: titleType }) }}
             <n-tooltip trigger="hover">
                 <template #trigger>
-                    <div class="i-carbon-help text-gray-400 cursor-pointer"></div>
+                    <div class="i-carbon-help text-gray-400 cursor-pointer text-xs"></div>
                 </template>
                 {{ t('config.cors.desc') }}
             </n-tooltip>
         </h3>
         
-        <n-form-item :label="t('config.cors.allowedOrigins')" label-placement="left" :show-feedback="false" class="mb-2">
-            <n-input v-model:value="formModel.allowedOrigins" :placeholder="t('config.cors.allowedOriginsPlaceholder')" />
-        </n-form-item>
+        <div class="space-y-3">
+            <n-form-item :label="t('config.cors.allowedOrigins')" label-placement="top" :show-feedback="false">
+                <n-input v-model:value="formModel.allowedOrigins" :placeholder="t('config.cors.allowedOriginsPlaceholder')" />
+            </n-form-item>
 
-        <n-form-item :label="t('config.cors.allowedMethods')" label-placement="left" :show-feedback="false" class="mb-2">
-            <n-checkbox-group v-model:value="formModel.allowedMethods">
-                <n-space>
-                    <n-checkbox v-for="opt in methodOptions" :key="opt.value" :value="opt.value" :label="opt.label" />
-                </n-space>
-            </n-checkbox-group>
-        </n-form-item>
+            <n-form-item :label="t('config.cors.allowedMethods')" label-placement="top" :show-feedback="false">
+                <n-checkbox-group v-model:value="formModel.allowedMethods">
+                    <n-space>
+                        <n-checkbox v-for="opt in methodOptions" :key="opt.value" :value="opt.value" :label="opt.label" />
+                    </n-space>
+                </n-checkbox-group>
+            </n-form-item>
 
-        <n-form-item :label="t('config.cors.allowedHeaders')" label-placement="left" :show-feedback="false" class="mb-2">
-            <n-input v-model:value="formModel.allowedHeaders" :placeholder="t('config.cors.allowedHeadersPlaceholder')" />
-        </n-form-item>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <n-form-item :label="t('config.cors.allowedHeaders')" label-placement="top" :show-feedback="false">
+                    <n-input v-model:value="formModel.allowedHeaders" :placeholder="t('config.cors.allowedHeadersPlaceholder')" />
+                </n-form-item>
 
-        <n-form-item :label="t('config.cors.exposeHeaders')" label-placement="left" :show-feedback="false" class="mb-2">
-            <n-input v-model:value="formModel.exposeHeaders" :placeholder="t('config.cors.exposeHeadersPlaceholder')" />
-        </n-form-item>
+                <n-form-item :label="t('config.cors.exposeHeaders')" label-placement="top" :show-feedback="false">
+                    <n-input v-model:value="formModel.exposeHeaders" :placeholder="t('config.cors.exposeHeadersPlaceholder')" />
+                </n-form-item>
+            </div>
 
-        <n-form-item :label="t('config.cors.maxAgeSeconds')" label-placement="left" :show-feedback="false" class="mb-4">
-            <n-input-number v-model:value="formModel.maxAgeSeconds" :min="0" class="w-32" />
-        </n-form-item>
+            <n-form-item :label="t('config.cors.maxAgeSeconds')" label-placement="top" :show-feedback="false">
+                <n-input-number v-model:value="formModel.maxAgeSeconds" :min="0" class="w-full md:w-1/2" />
+            </n-form-item>
+        </div>
 
-        <div class="flex gap-2 justify-end">
-             <n-button secondary type="info" @click="handleGetCors" :loading="loading">
+        <div class="flex gap-2 justify-end mt-4 pt-3 border-t border-gray-200 dark:border-gray-700/50">
+             <button @click="handleGetCors" :disabled="loading"
+                class="giopic-link-btn px-3 h-8 text-xs font-bold rounded bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/30 transition-colors flex items-center gap-1">
+                <div class="i-carbon-cloud-download" />
                 {{ t('config.cors.get') }}
-            </n-button>
-            <n-button type="success" @click="handleSetCors" :loading="loading">
+            </button>
+            <button @click="handleSetCors" :disabled="loading"
+                class="giopic-link-btn px-3 h-8 text-xs font-bold rounded bg-green-50 text-green-600 hover:bg-green-100 dark:bg-green-900/20 dark:text-green-400 dark:hover:bg-green-900/30 transition-colors flex items-center gap-1">
+                <div class="i-carbon-cloud-upload" />
                 {{ t('config.cors.set') }}
-            </n-button>
-            <n-button @click="handleReset">
+            </button>
+            <button @click="handleReset"
+                class="giopic-link-btn px-3 h-8 text-xs font-bold rounded border border-gray-200 dark:border-gray-600 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors">
                 {{ t('config.cors.reset') }}
-            </n-button>
+            </button>
         </div>
     </div>
 </template>

@@ -107,79 +107,81 @@ function updateKvPairs(key: string, pairs: { key: string, value: string }[]) {
 </script>
 
 <template>
-  <div>
-    <n-form-item 
-        v-for="field in schema" 
-        :key="field.key"
-        :label="getLabel(field.label)" 
-        :path="field.key"
-    >
-      <n-input 
-        v-if="field.type === 'text' || field.type === 'password'"
-        :value="modelValue[field.key]" 
-        @update:value="(val: string | number) => updateField(field.key, val)"
-        :type="field.type === 'password' ? 'password' : 'text'"
-        :show-password-on="field.type === 'password' ? 'click' : undefined"
-        :placeholder="field.placeholder ? (field.placeholder.includes('.') ? t(field.placeholder) : field.placeholder) : ''" 
-      />
-      <n-select
-        v-else-if="field.type === 'select' && field.key !== 'strategyId' && !(field.key === 'albumId' && modelValue.type === 'lsky')"
-        :value="modelValue[field.key] || field.defaultValue"
-        @update:value="(val: string | number) => updateField(field.key, val)"
-        :options="field.options"
-      />
-      
-      <!-- Special handling for strategyId to use fetched options if available and Lsky -->
-      <n-select
-        v-else-if="field.key === 'strategyId' && modelValue.type === 'lsky'"
-        :value="modelValue[field.key]"
-        @update:value="(val: string | number) => updateField(field.key, val)"
-        :options="strategyOptions"
-        :loading="loadingStrategies"
-        :placeholder="t('config.form.strategyIdPlaceholder')"
-        filterable
-        tag
-      />
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
+    <template v-for="field in schema" :key="field.key">
+        <n-form-item 
+            :label="getLabel(field.label)" 
+            :path="field.key"
+            :class="{ 'md:col-span-2': field.type === 'textarea' || field.type === 'kv-pairs' }"
+        >
+        <n-input 
+            v-if="field.type === 'text' || field.type === 'password'"
+            :value="modelValue[field.key]" 
+            @update:value="(val: string | number) => updateField(field.key, val)"
+            :type="field.type === 'password' ? 'password' : 'text'"
+            :show-password-on="field.type === 'password' ? 'click' : undefined"
+            :placeholder="field.placeholder ? (field.placeholder.includes('.') ? t(field.placeholder) : field.placeholder) : ''" 
+        />
+        <n-select
+            v-else-if="field.type === 'select' && field.key !== 'strategyId' && !(field.key === 'albumId' && modelValue.type === 'lsky')"
+            :value="modelValue[field.key] || field.defaultValue"
+            @update:value="(val: string | number) => updateField(field.key, val)"
+            :options="field.options"
+        />
+        
+        <!-- Special handling for strategyId to use fetched options if available and Lsky -->
+        <n-select
+            v-else-if="field.key === 'strategyId' && modelValue.type === 'lsky'"
+            :value="modelValue[field.key]"
+            @update:value="(val: string | number) => updateField(field.key, val)"
+            :options="strategyOptions"
+            :loading="loadingStrategies"
+            :placeholder="t('config.form.strategyIdPlaceholder')"
+            filterable
+            tag
+        />
 
-      <!-- Special handling for albumId to use fetched options if available and Lsky -->
-      <n-select
-        v-else-if="field.key === 'albumId' && modelValue.type === 'lsky'"
-        :value="modelValue[field.key]"
-        @update:value="(val: string | number) => updateField(field.key, val)"
-        :options="albumOptions"
-        :loading="loadingAlbums"
-        :placeholder="field.placeholder ? (field.placeholder.includes('.') ? t(field.placeholder) : field.placeholder) : ''"
-        filterable
-        clearable
-        tag
-      />
-      
-      <n-input 
-        v-else-if="field.key === 'strategyId' && modelValue.type !== 'lsky'"
-        :value="modelValue[field.key]" 
-        @update:value="(val: string | number) => updateField(field.key, val)"
-        :placeholder="field.placeholder ? (field.placeholder.includes('.') ? t(field.placeholder) : field.placeholder) : ''" 
-      />
+        <!-- Special handling for albumId to use fetched options if available and Lsky -->
+        <n-select
+            v-else-if="field.key === 'albumId' && modelValue.type === 'lsky'"
+            :value="modelValue[field.key]"
+            @update:value="(val: string | number) => updateField(field.key, val)"
+            :options="albumOptions"
+            :loading="loadingAlbums"
+            :placeholder="field.placeholder ? (field.placeholder.includes('.') ? t(field.placeholder) : field.placeholder) : ''"
+            filterable
+            clearable
+            tag
+        />
+        
+        <n-input 
+            v-else-if="field.key === 'strategyId' && modelValue.type !== 'lsky'"
+            :value="modelValue[field.key]" 
+            @update:value="(val: string | number) => updateField(field.key, val)"
+            :placeholder="field.placeholder ? (field.placeholder.includes('.') ? t(field.placeholder) : field.placeholder) : ''" 
+        />
 
-      <n-input
-        v-else-if="field.type === 'textarea'"
-        :value="modelValue[field.key]"
-        @update:value="(val: string | number) => updateField(field.key, val)"
-        type="textarea"
-        :placeholder="field.placeholder ? (field.placeholder.includes('.') ? t(field.placeholder) : field.placeholder) : ''"
-        :autosize="{ minRows: 2, maxRows: 6 }"
-      />
+        <n-input
+            v-else-if="field.type === 'textarea'"
+            :value="modelValue[field.key]"
+            @update:value="(val: string | number) => updateField(field.key, val)"
+            type="textarea"
+            :placeholder="field.placeholder ? (field.placeholder.includes('.') ? t(field.placeholder) : field.placeholder) : ''"
+            :autosize="{ minRows: 3, maxRows: 6 }"
+        />
 
-      <n-dynamic-input
-        v-else-if="field.type === 'kv-pairs'"
-        :value="getKvPairs(modelValue[field.key])"
-        @update:value="(val: any) => updateKvPairs(field.key, val)"
-        preset="pair"
-        key-placeholder="Key"
-        value-placeholder="Value"
-      />
-      
-      <!-- Add other types here if needed, e.g. switch, number -->
-    </n-form-item>
+        <n-dynamic-input
+            v-else-if="field.type === 'kv-pairs'"
+            :value="getKvPairs(modelValue[field.key])"
+            @update:value="(val: any) => updateKvPairs(field.key, val)"
+            preset="pair"
+            key-placeholder="Key"
+            value-placeholder="Value"
+            class="w-full"
+        />
+        
+        <!-- Add other types here if needed, e.g. switch, number -->
+        </n-form-item>
+    </template>
   </div>
 </template>

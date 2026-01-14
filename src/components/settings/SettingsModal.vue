@@ -202,13 +202,13 @@ async function checkVersion() {
                 <div>
                     <div class="text-sm font-bold text-gray-500 mb-2">{{ t('settings.language') }}</div>
                     <div class="flex gap-2">
-                        <button class="flex-1 py-2 rounded-lg border transition-all font-medium text-sm"
+                        <button class="giopic-link-btn giopic-link-btn-primary flex-1 py-2 border font-medium text-sm"
                             :class="locale === 'zh-CN' ? 'text-white' : 'border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'"
                             :style="locale === 'zh-CN' ? { backgroundColor: primaryColor } : {}"
                             @click="changeLocale('zh-CN')">
                             中文
                         </button>
-                        <button class="flex-1 py-2 rounded-lg border transition-all font-medium text-sm"
+                        <button class="giopic-link-btn giopic-link-btn-primary flex-1 py-2 border font-medium text-sm"
                             :class="locale === 'en-US' ? 'text-white' : 'border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'"
                             :style="locale === 'en-US' ? { backgroundColor: primaryColor } : {}"
                             @click="changeLocale('en-US')">
@@ -234,7 +234,7 @@ async function checkVersion() {
                 <div>
                     <div class="text-sm font-bold text-gray-500 mb-2">{{ t('settings.sidebar') }}</div>
                     <button
-                        class="w-full py-2 rounded-lg border transition-all font-medium text-sm flex items-center justify-center gap-2"
+                        class="giopic-link-btn giopic-link-btn-primary w-full py-2 border font-medium text-sm flex items-center justify-center gap-2"
                         :class="'border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'"
                         @click="showSidebarSettings = true">
                         <div class="i-carbon-settings-adjust" /> {{ t('settings.sidebar') }}
@@ -246,7 +246,7 @@ async function checkVersion() {
                     <div class="text-sm font-bold text-gray-500 mb-2">{{ t('settings.theme') }}</div>
                     <div class=" flex items-center  gap-2">
                         <button v-for="(color, key) in themeColors" :key="key"
-                            class=" w-8 h-8 aspect-square rounded-full transition-all flex items-center justify-center hover:scale-110"
+                            class="giopic-icon-btn w-8 h-8 rounded-full"
                             :style="{ backgroundColor: color.primary }" @click="themeStore.setThemeColor(key)">
                             <div v-if="themeStore.currentColor === key"
                                 class="i-carbon-checkmark text-white text-lg font-bold" />
@@ -308,7 +308,7 @@ async function checkVersion() {
                             class="flex items-center justify-between text-green-600 dark:text-green-400">
                             <span>{{ t('settings.version.newVersion', { version: latestVersion }) }}</span>
                             <a href="https://github.com/ZenEcho/GioPic_Web_Extension/" target="_blank"
-                                class="text-xs px-2 py-1 bg-green-100 dark:bg-green-900/30 rounded hover:bg-green-200 dark:hover:bg-green-900/50 transition-colors">
+                                class="giopic-link-btn text-xs px-2 py-1 bg-green-100 dark:bg-green-900/30 rounded hover:bg-green-200 dark:hover:bg-green-900/50">
                                 {{ t('settings.version.update') }}
                             </a>
                         </div>

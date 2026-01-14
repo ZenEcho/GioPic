@@ -111,40 +111,45 @@ function confirmImport() {
             'md:w-[288px] md:h-auto md:static md:translate-y-0 md:m-6'
         ]" @mouseenter="isHovered = true" @mouseleave="isHovered = false" @click="isHovered = true">
         <div class="flex flex-row items-center mb-8 header-section">
-            <div class=" w-full text-2xl font-black tracking-tighter dark:text-white">{{ t('app.name') }}-<span
+            <div class="w-full text-2xl font-black tracking-tighter dark:text-white">{{ t('app.name') }}-<span
                     class="text-primary">{{ t('app.nameSuffix') }}</span></div>
-            <div class="flex flex-row items-center">
-                <button v-for="(color, key) in themeColors" :key="key"
-                        class="w-3 h-3 mx-[1px] rounded-full transition-all flex items-center justify-center hover:scale-110"
-                        :style="{ backgroundColor: color.primary }" @click="themeStore.setThemeColor(key)">
-                        <div v-if="themeStore.currentColor === key"
-                            class="i-carbon-checkmark text-white text-lg font-bold" />
-                    </button>
-            </div>
+
             <div class="flex flex-row items-center gap-1">
-                <button class="text-gray-400 hover:text-primary rounded bg-transparent text-xl""
-                    @click=" themeStore.isDark = !themeStore.isDark">
+                <button class="giopic-icon-btn text-gray-400 hover:text-primary text-xl"
+                    @click="themeStore.isDark = !themeStore.isDark">
                     <div :class="themeStore.isDark ? 'i-carbon-moon' : 'i-carbon-sun'" />
                 </button>
-                <div class="cursor-pointer" @click.stop="emit('openSettings')">
-                    <div class="i-carbon-settings text-gray-400 hover:text-primary transition-colors text-xl"></div>
-                </div>
+                <button class="giopic-icon-btn text-gray-400 hover:text-primary text-xl"
+                    @click.stop="emit('openSettings')">
+                    <div class="i-carbon-settings" />
+                </button>
             </div>
         </div>
 
         <div class="content-section flex flex-col flex-1 overflow-hidden transition-all duration-300">
             <div
                 class="mb-4 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider flex flex-row justify-between">
-                <div>{{ t('home.nodes') }}</div>
-                <div class="flex flex-row items-center gap-3">
-                    <!-- 刷新 -->
-                    <div class="cursor-pointer" :title="t('home.refresh')" @click.stop="handleRefresh">
-                        <div class="i-carbon-update-now text-gray-400 hover:text-primary transition-colors text-xl"></div>
+                <div class="flex flex-row items-center gap-2">
+                   <div>{{ t('home.nodes') }}</div>
+                       <div class="flex flex-row items-center">
+                        <button v-for="(color, key) in themeColors" :key="key" class="giopic-icon-btn w-3 h-3 mx-[1px]"
+                            :style="{ backgroundColor: color.primary }" @click="themeStore.setThemeColor(key)">
+                            <div v-if="themeStore.currentColor === key"
+                                class="i-carbon-checkmark text-white text-lg font-bold" />
+                        </button>
                     </div>
-                    <!-- 分享全部 -->
-                    <div class="cursor-pointer" :title="t('home.shareAll')" @click.stop="handleShareAll">
-                        <div class="i-carbon-share text-gray-400 hover:text-primary transition-colors text-xl"></div>
-                    </div>
+                </div>
+                
+                <div class="flex flex-row items-center gap-2">
+                 
+                    <button class="giopic-icon-btn text-gray-400 hover:text-primary text-xl" :title="t('home.refresh')"
+                        @click.stop="handleRefresh">
+                        <div class="i-carbon-update-now" />
+                    </button>
+                    <button class="giopic-icon-btn text-gray-400 hover:text-primary text-xl" :title="t('home.shareAll')"
+                        @click.stop="handleShareAll">
+                        <div class="i-carbon-share" />
+                    </button>
                 </div>
 
             </div>
@@ -192,12 +197,12 @@ function confirmImport() {
 
             <div class="mt-4 flex gap-3 flex-shrink-0">
                 <button @click="handleImport"
-                    class="flex-1 py-3 rounded-xl  text-gray-600 dark:text-gray-400 font-medium hover:border-primary hover:text-primary hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors flex items-center justify-center gap-2">
+                    class="rounded-lg flex-1 py-3 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 font-medium hover:border-primary hover:text-primary   flex items-center justify-center gap-2">
                     <div class="i-carbon-document-import w-4 h-4" />
                     {{ t('home.import') }}
                 </button>
                 <button @click="emit('add')"
-                    class="flex-[2] py-3 rounded-xl text-gray-600 dark:text-gray-400 font-medium hover:border-primary hover:text-primary hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors flex items-center justify-center gap-2">
+                    class=" rounded-lg flex-[2] py-3 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 font-medium hover:border-primary hover:text-primary   flex items-center justify-center gap-2">
                     <div class="i-carbon-add-filled w-4 h-4" />
                     {{ t('home.addNode') }}
                 </button>

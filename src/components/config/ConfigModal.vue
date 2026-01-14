@@ -3,6 +3,7 @@ import { ref, watch, computed } from 'vue'
 import { useConfigStore } from '@/stores/config'
 import { useI18n } from 'vue-i18n'
 import { useMessage } from 'naive-ui'
+import { useThemeStore } from '@/stores/theme'
 import type { DriveConfig } from '@/types'
 import { DRIVE_SCHEMAS, DRIVE_TYPE_OPTIONS } from '@/constants/drive-schemas'
 import DynamicConfigForm from './DynamicConfigForm.vue'
@@ -24,6 +25,9 @@ const { t } = useI18n()
 const configStore = useConfigStore()
 const message = useMessage()
 const formRef = ref()
+const themeStore = useThemeStore()
+
+const primaryColor = computed(() => themeStore.themeOverrides?.common?.primaryColor || '#409eff')
 
 const defaultForm: any = {
   id: '',
@@ -120,40 +124,55 @@ function handleClose() {
         @update:show="(val: boolean) => emit('update:show', val)"
         preset="card" 
         :title="isEdit ? t('config.editTitle') : t('config.addTitle')" 
-        class="w-full max-w-lg rounded-2xl" 
-        :segmented="false"
+        class="w-full max-w-2xl rounded-[24px] overflow-hidden shadow-xl" 
+        :segmented="true"
+        :header-style="{ padding: '20px 24px', borderBottom: '1px solid var(--n-border-color)' }"
+        :content-style="{ padding: '24px' }"
+        :footer-style="{ padding: '16px 24px', borderTop: '1px solid var(--n-border-color)' }"
     >
-      <n-form ref="formRef" :model="formModel" :rules="rules" label-placement="left" label-width="100" require-mark-placement="right-hanging">
-        <n-form-item :label="t('config.form.name')" path="name">
-          <n-input v-model:value="formModel.name" :placeholder="t('config.form.namePlaceholder')" />
-        </n-form-item>
-        <n-form-item :label="t('config.form.type')" path="type">
-          <n-select v-model:value="formModel.type" :options="DRIVE_TYPE_OPTIONS" :disabled="isEdit" />
-        </n-form-item>
+      <n-form ref="formRef" :model="formModel" :rules="rules" label-placement="top" size="medium">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
+            <n-form-item :label="t('config.form.name')" path="name">
+              <n-input v-model:value="formModel.name" :placeholder="t('config.form.namePlaceholder')" />
+            </n-form-item>
+            <n-form-item :label="t('config.form.type')" path="type">
+              <n-select v-model:value="formModel.type" :options="DRIVE_TYPE_OPTIONS" :disabled="isEdit" />
+            </n-form-item>
+        </div>
 
-        <!-- Dynamic Form -->
-        <DynamicConfigForm 
-            :schema="currentSchema"
-            v-model="formModel"
-        />
+        <div class="border-t border-gray-100 dark:border-gray-700 my-4 pt-4">
+            <!-- Dynamic Form -->
+            <DynamicConfigForm 
+                :schema="currentSchema"
+                v-model="formModel"
+            />
+        </div>
 
-        <CorsConfig 
-            v-if="(formModel.type === 'aliyun' || formModel.type === 'tencent' || formModel.type === 'aws') && isEdit"
-            :config="formModel"
-            :type="formModel.type"
-        />
+        <div v-if="(formModel.type === 'aliyun' || formModel.type === 'tencent' || formModel.type === 'aws') && isEdit" 
+             class="space-y-4 border-t border-gray-100 dark:border-gray-700 pt-4 mt-4">
+            <CorsConfig 
+                :config="formModel"
+                :type="formModel.type"
+            />
 
-        <AclConfig 
-            v-if="(formModel.type === 'aliyun' || formModel.type === 'tencent' || formModel.type === 'aws') && isEdit"
-            :config="formModel"
-            :type="formModel.type"
-        />
+            <AclConfig 
+                :config="formModel"
+                :type="formModel.type"
+            />
+        </div>
 
       </n-form>
       <template #footer>
-        <div class="flex justify-end gap-2">
-          <n-button @click="handleClose" quaternary>{{ t('common.cancel') }}</n-button>
-          <n-button type="primary" @click="handleSaveConfig">{{ t('common.save') }}</n-button>
+        <div class="flex justify-end gap-3">
+          <button @click="handleClose" 
+            class="giopic-link-btn px-4 h-9 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 font-medium transition-colors">
+            {{ t('common.cancel') }}
+          </button>
+          <button @click="handleSaveConfig" 
+            class="giopic-link-btn px-6 h-9 rounded-lg text-white hover:opacity-90 font-medium transition-opacity shadow-sm"
+            :style="{ backgroundColor: primaryColor }">
+            {{ t('common.save') }}
+          </button>
         </div>
       </template>
     </n-modal>
