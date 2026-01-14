@@ -3,6 +3,8 @@
 GioPic 是一个功能强大的浏览器图片上传扩展，支持多种图床和对象存储服务。
 GioPic is a powerful browser extension for uploading images to various storage services.
 
+[![Chrome](https://img.shields.io/badge/Chromium-chrome-blue?style=for-the-badge&logo=googlechrome)](https://chromewebstore.google.com/detail/giopic/cjmhdboadkifegpfnflaflbjeehndmak)
+
 ## 🌟 Features / 功能特性
 
 - **多图床支持 (Multi-Storage Support)**:
@@ -21,6 +23,17 @@ GioPic is a powerful browser extension for uploading images to various storage s
 - **多语言 (Multi-language)**: 支持简体中文和英语 (English & Simplified Chinese).
 - **现代化界面 (Modern UI)**: 基于 Vue 3 + Naive UI 构建 (Built with Vue 3 and Naive UI).
 
+## 🔧 Supported Browsers / 支持的浏览器
+
+- Google Chrome (Latest Version)
+- Microsoft Edge (Latest Version)
+
+## 演示图
+
+[![](https://i.mji.rip/2026/01/14/2bafa0a93887a7bb20d16454648edcd5.png)](https://i.mji.rip/2026/01/14/2bafa0a93887a7bb20d16454648edcd5.png)
+[![](https://i.mji.rip/2026/01/14/3c36933ae6050a35b25e5624c2d50517.png)](https://i.mji.rip/2026/01/14/3c36933ae6050a35b25e5624c2d50517.png)
+[![](https://i.mji.rip/2026/01/14/399fe94db0b61260ea57b96b9936db81.png)](https://i.mji.rip/2026/01/14/399fe94db0b61260ea57b96b9936db81.png)
+
 ## 🛠️ Installation / 安装
 
 1. Download the latest release or build from source.
@@ -31,6 +44,10 @@ GioPic is a powerful browser extension for uploading images to various storage s
    开启 "开发者模式"。
 4. Click "Load unpacked" and select the `dist` directory.
    点击 "加载已解压的扩展程序"，选择 `dist` 目录。
+### 浏览器商店安装
+
+- [Chrome 扩展商店](https://chromewebstore.google.com/detail/giopic/cjmhdboadkifegpfnflaflbjeehndmak)
+- [Edge 扩展商店(待审核)](https://chromewebstore.google.com/detail/giopic/cjmhdboadkifegpfnflaflbjeehndmak)
 
 ## 💻 Development / 开发指南
 
