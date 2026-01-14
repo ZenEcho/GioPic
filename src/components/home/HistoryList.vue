@@ -70,7 +70,7 @@ function copyLink(url: string, thumbUrl?: string) {
 </script>
 
 <template>
- <div   class="min-h-[180px] p-6 m-4 md:m-6 flex flex-col bg-white dark:bg-gray-800 rounded-[24px] shadow-sm border border-gray-100 dark:border-gray-700 flex-shrink-0 transition-colors duration-300 overflow-hidden">
+ <div   class="max-md:h-[calc(100vh-466px)] p-6 m-4 md:m-6 mb-[86px] flex flex-col bg-white dark:bg-gray-800 rounded-[24px] shadow-sm border border-gray-100 dark:border-gray-700 flex-shrink-0 transition-colors duration-300 overflow-hidden">
             <div class="flex items-center justify-between mb-4 flex-shrink-0">
                 <div class="text-lg font-black italic text-gray-800 dark:text-white">{{ t('home.history.uploadQueue') }}
                 </div>

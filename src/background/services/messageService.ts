@@ -15,20 +15,22 @@ export async function handleMessage(message: any, sender: Runtime.MessageSender)
             updateContextMenuLocale()
         }
     } else if (message.type === 'RELAY_UPLOAD_SUCCESS') {
-        await relayUploadSuccess(message)
+        await relayUploadSuccess(message, sender)
     } else if (message.getXsrfToken === 'getXsrfToken' || message.type === 'GET_XSRF_TOKEN') {
         await handleGetXsrfToken(message, sender)
     } else if (message.type === 'ADD_CONFIG') {
         await handleAddConfig(message, sender)
     } else if (message.type === 'FETCH_IMAGE_BLOB') {
         return await handleFetchImageBlob(message)
+    } else if (message.type === 'REGISTER_CONTENT') {
+        await handleRegisterContent(sender)
     }
 }
 
 async function handleFetchImageBlob(message: any) {
     const url = message.url
     if (!url) return null
-    
+
     // Add dynamic rule for Referer
     if (url.includes('i.111666.best')) {
         try {
@@ -72,10 +74,37 @@ async function handleFetchImageBlob(message: any) {
     }
 }
 
-async function relayUploadSuccess(message: any) {
+async function relayUploadSuccess(message: any, sender: Runtime.MessageSender) {
+    const senderTabId = sender.tab?.id
+    if (senderTabId) {
+        await browser.tabs.sendMessage(senderTabId, {
+            type: 'UPLOAD_EVENT',
+            data: {
+                event: 'success',
+                id: message.id || 'relay',
+                payload: message.payload
+            }
+        })
+        return
+    }
+    try {
+        const store = await browser.storage.local.get('giopic-last-content-tab')
+        const lastTabId = store['giopic-last-content-tab'] as number | undefined
+        if (lastTabId) {
+            await browser.tabs.sendMessage(lastTabId, {
+                type: 'UPLOAD_EVENT',
+                data: {
+                    event: 'success',
+                    id: message.id || 'relay',
+                    payload: message.payload
+                }
+            })
+            return
+        }
+    } catch {}
     const tabs = await browser.tabs.query({ active: true, currentWindow: true })
-    if (tabs && tabs.length > 0 && tabs[0] && tabs[0].id) {
-        browser.tabs.sendMessage(tabs[0].id, {
+    if (tabs && tabs.length > 0 && tabs[0]?.id) {
+        await browser.tabs.sendMessage(tabs[0].id!, {
             type: 'UPLOAD_EVENT',
             data: {
                 event: 'success',
@@ -137,4 +166,12 @@ async function handleAddConfig(message: any, sender: Runtime.MessageSender) {
     } catch (e) {
         console.error('Failed to add config', e)
     }
+}
+
+async function handleRegisterContent(sender: Runtime.MessageSender) {
+    const tabId = sender.tab?.id
+    if (!tabId) return
+    try {
+        await browser.storage.local.set({ 'giopic-last-content-tab': tabId })
+    } catch {}
 }

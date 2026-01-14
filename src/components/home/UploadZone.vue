@@ -42,7 +42,7 @@ function onFileChange(e: Event) {
 
 <template>
     <div 
-        class="flex-1 m-4 md:m-6 bg-white dark:bg-gray-800 rounded-[32px] border-4 border-dashed relative transition-all duration-300 flex flex-col items-center justify-center overflow-hidden min-h-[300px] min-w-[300px]"
+        class="max-md:max-h-[300px] min-w-[300px] flex-1 m-4 md:m-6 bg-white dark:bg-gray-800 rounded-[32px] border-4 border-dashed relative transition-all duration-300 flex flex-col items-center justify-center overflow-hidden "
         :class="currentHover ? 'border-primary bg-gray-50 dark:bg-gray-700' : 'border-gray-200 dark:border-gray-700'"
         @dragover="onDragOver"
         @dragleave="onDragLeave"

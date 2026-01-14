@@ -39,7 +39,7 @@ browser.runtime.onMessage.addListener(async (message: any) => {
 
         // 检查是否开启自动注入
         const storage = await browser.storage.local.get('giopic-auto-inject')
-        if (storage['giopic-auto-inject']) {
+        if (storage['giopic-auto-inject'] !== false) {
             // 通过 postMessage 发送给页面脚本 (Main World)
             window.postMessage({
                 type: 'GIOPIC_INJECT',
@@ -60,6 +60,10 @@ browser.runtime.onMessage.addListener(async (message: any) => {
 console.log('GioPic content script loaded')
 
 injectPageBundle()
+
+try {
+    browser.runtime.sendMessage({ type: 'REGISTER_CONTENT' })
+} catch {}
 
 mountComponent(
     NotificationView,
