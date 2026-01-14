@@ -2,19 +2,20 @@ import './polyfill'
 import browser from 'webextension-polyfill'
 import { setupContextMenus } from './services/contextMenu'
 import { getOpenMode, updateActionBehavior } from './services/actionManager'
-import { handleMessage } from './services/messageService'
+import { handleMessage, initDesktopLinkOnStartup } from './services/messageService'
 
 const POPUP_URL = 'index.html'
 
 console.log('GioPic background script started')
 
-// Initialize
+// 初始化
 updateActionBehavior()
 setupContextMenus()
+initDesktopLinkOnStartup()
 
 browser.runtime.onMessage.addListener(handleMessage)
 
-// Handle clicks for non-popup modes
+// 处理非弹窗模式下的点击事件
 browser.action.onClicked.addListener(async (tab) => {
     const mode = await getOpenMode()
     if (mode === 'tab') {
@@ -29,7 +30,7 @@ browser.action.onClicked.addListener(async (tab) => {
     }
 })
 
-// Install Handler
+// 安装事件处理
 browser.runtime.onInstalled.addListener(() => {
     console.log('GioPic installed')
     setupContextMenus()

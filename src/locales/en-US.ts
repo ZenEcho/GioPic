@@ -161,7 +161,7 @@ export default {
     theme: 'Theme Color',
     appearance: 'Appearance',
     darkMode: 'Dark Mode',
-    lightMode: 'Light Mode',
+    lightMode: 'Dark Mode',
     openMode: 'Open Mode',
     automation: 'Automation',
     autoInject: 'Auto Inject URL after Upload',
@@ -169,6 +169,19 @@ export default {
       tab: 'New Tab',
       window: 'Popup Window',
       action: 'Built-in Popup',
+    },
+    desktopLink: {
+      title: 'Desktop Link',
+      description: 'Use WebSocket to receive URLs from desktop app and auto insert',
+      enabled: 'Enable Desktop Link',
+      statusLabel: 'Connection Status',
+      status: {
+        disabled: 'Disabled',
+        disconnected: 'Disconnected',
+        connecting: 'Connecting',
+        connected: 'Connected',
+        error: 'Error',
+      },
     },
     themeColor: {
       blue: 'Geek Blue',

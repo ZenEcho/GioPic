@@ -170,6 +170,19 @@ export default {
       window: '弹窗窗口',
       action: '内置弹窗',
     },
+    desktopLink: {
+      title: '桌面联动',
+      description: '通过 WebSocket 与桌面端通信，上传成功后自动插入链接',
+      enabled: '启用桌面联动',
+      statusLabel: '连接状态',
+      status: {
+        disabled: '未启用',
+        disconnected: '未连接',
+        connecting: '连接中',
+        connected: '已连接',
+        error: '异常',
+      },
+    },
     themeColor: {
       blue: '极客蓝',
       green: '清新绿',

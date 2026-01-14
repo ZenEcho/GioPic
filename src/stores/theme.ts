@@ -4,7 +4,7 @@ import { type GlobalThemeOverrides, darkTheme } from 'naive-ui'
 import { db } from '@/utils/storage'
 import browser from 'webextension-polyfill'
 
-export type ThemeColor = 'blue' | 'green' | 'purple' | 'orange' | 'red'
+export type ThemeColor = 'blue' | 'green' | 'purple' | 'orange' | 'red' 
 
 export const themeColors: Record<ThemeColor, { primary: string, hover: string, pressed: string, suppl: string }> = {
   blue: {
@@ -37,6 +37,8 @@ export const themeColors: Record<ThemeColor, { primary: string, hover: string, p
     pressed: '#DC2626',
     suppl: '#FEE2E2',
   },
+
+
 }
 
 export const useThemeStore = defineStore('theme', () => {

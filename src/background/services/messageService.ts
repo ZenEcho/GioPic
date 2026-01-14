@@ -6,6 +6,22 @@ import { updateContextMenuLocale } from './contextMenu'
 import i18n from '@/i18n'
 import type { DriveConfig } from '@/types'
 
+type DesktopLinkStatusType = 'disabled' | 'disconnected' | 'connecting' | 'connected' | 'error'
+
+interface DesktopLinkStatusPayload {
+    enabled: boolean
+    status: DesktopLinkStatusType
+    lastError?: string
+}
+
+const DESKTOP_LINK_ENABLED_KEY = 'giopic-desktop-link-enabled'
+const DESKTOP_WS_URL = 'ws://127.0.0.1:26725/giopic'
+
+let desktopWs: WebSocket | null = null
+let desktopEnabled = false
+let desktopStatus: DesktopLinkStatusType = 'disabled'
+let desktopLastError: string | undefined
+
 export async function handleMessage(message: any, sender: Runtime.MessageSender) {
     if (message.type === 'UPDATE_OPEN_MODE') {
         await updateActionBehavior()
@@ -24,6 +40,10 @@ export async function handleMessage(message: any, sender: Runtime.MessageSender)
         return await handleFetchImageBlob(message)
     } else if (message.type === 'REGISTER_CONTENT') {
         await handleRegisterContent(sender)
+    } else if (message.type === 'DESKTOP_LINK_GET_STATUS') {
+        return getDesktopLinkStatus()
+    } else if (message.type === 'DESKTOP_LINK_SET_ENABLED') {
+        await setDesktopLinkEnabled(Boolean(message.enabled))
     }
 }
 
@@ -115,6 +135,27 @@ async function relayUploadSuccess(message: any, sender: Runtime.MessageSender) {
     }
 }
 
+async function injectUrlToContent(url: string) {
+    try {
+        const store = await browser.storage.local.get('giopic-last-content-tab')
+        const lastTabId = store['giopic-last-content-tab'] as number | undefined
+        if (lastTabId) {
+            await browser.tabs.sendMessage(lastTabId, {
+                type: 'MANUAL_INJECT',
+                payload: { url }
+            })
+            return
+        }
+    } catch {}
+    const tabs = await browser.tabs.query({ active: true, currentWindow: true })
+    if (tabs && tabs.length > 0 && tabs[0]?.id) {
+        await browser.tabs.sendMessage(tabs[0].id!, {
+            type: 'MANUAL_INJECT',
+            payload: { url }
+        })
+    }
+}
+
 async function handleGetXsrfToken(message: any, sender: Runtime.MessageSender) {
     const url = message.url as string
     let token = ''
@@ -174,4 +215,132 @@ async function handleRegisterContent(sender: Runtime.MessageSender) {
     try {
         await browser.storage.local.set({ 'giopic-last-content-tab': tabId })
     } catch {}
+}
+
+function broadcastDesktopLinkStatus() {
+    const payload = getDesktopLinkStatus()
+    try {
+        browser.runtime.sendMessage({
+            type: 'DESKTOP_LINK_STATUS',
+            payload
+        })
+    } catch {}
+}
+
+function getDesktopLinkStatus(): DesktopLinkStatusPayload {
+    return {
+        enabled: desktopEnabled,
+        status: desktopEnabled ? desktopStatus : 'disabled',
+        lastError: desktopLastError
+    }
+}
+
+async function setDesktopLinkEnabled(enabled: boolean) {
+    desktopEnabled = enabled
+    if (!enabled) {
+        desktopStatus = 'disabled'
+        desktopLastError = undefined
+        if (desktopWs) {
+            try {
+                desktopWs.close()
+            } catch {}
+            desktopWs = null
+        }
+        try {
+            await browser.storage.local.set({ [DESKTOP_LINK_ENABLED_KEY]: false })
+        } catch {}
+        broadcastDesktopLinkStatus()
+        return
+    }
+    try {
+        await browser.storage.local.set({ [DESKTOP_LINK_ENABLED_KEY]: true })
+    } catch {}
+    connectDesktopWebSocket()
+    broadcastDesktopLinkStatus()
+}
+
+function connectDesktopWebSocket() {
+    if (!desktopEnabled) {
+        desktopStatus = 'disabled'
+        desktopLastError = undefined
+        desktopWs = null
+        return
+    }
+    if (desktopWs && desktopStatus === 'connected') {
+        return
+    }
+    try {
+        desktopStatus = 'connecting'
+        desktopLastError = undefined
+        broadcastDesktopLinkStatus()
+        const ws = new WebSocket(DESKTOP_WS_URL)
+        desktopWs = ws
+        ws.onopen = () => {
+            desktopStatus = 'connected'
+            desktopLastError = undefined
+            broadcastDesktopLinkStatus()
+            const hello = {
+                type: 'hello',
+                client: 'giopic-extension',
+                version: browser.runtime.getManifest().version,
+                features: ['autoInsert']
+            }
+            try {
+                ws.send(JSON.stringify(hello))
+            } catch {}
+        }
+        ws.onclose = () => {
+            desktopWs = null
+            desktopStatus = desktopEnabled ? 'disconnected' : 'disabled'
+            broadcastDesktopLinkStatus()
+        }
+        ws.onerror = () => {
+            desktopStatus = 'error'
+            desktopLastError = 'WebSocket error'
+            broadcastDesktopLinkStatus()
+        }
+        ws.onmessage = async (event) => {
+            const raw = event.data
+            let data: any
+            try {
+                if (typeof raw === 'string') {
+                    data = JSON.parse(raw)
+                } else if (raw instanceof ArrayBuffer) {
+                    const text = new TextDecoder().decode(raw)
+                    data = JSON.parse(text)
+                } else {
+                    return
+                }
+            } catch {
+                return
+            }
+            if (!data || typeof data !== 'object') {
+                return
+            }
+            if (data.type === 'upload_success' && typeof data.url === 'string') {
+                await injectUrlToContent(data.url)
+            }
+        }
+    } catch {
+        desktopStatus = 'error'
+        desktopLastError = 'WebSocket init failed'
+        desktopWs = null
+        broadcastDesktopLinkStatus()
+    }
+}
+
+export async function initDesktopLinkOnStartup() {
+    try {
+        const store = await browser.storage.local.get(DESKTOP_LINK_ENABLED_KEY)
+        desktopEnabled = store[DESKTOP_LINK_ENABLED_KEY] === true
+    } catch {
+        desktopEnabled = false
+    }
+    if (desktopEnabled) {
+        connectDesktopWebSocket()
+    } else {
+        desktopStatus = 'disabled'
+        desktopLastError = undefined
+    }
+    broadcastDesktopLinkStatus()
 }
