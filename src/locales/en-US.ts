@@ -26,6 +26,12 @@ export default {
   },
   home: {
     nodes: 'Nodes',
+    myImages: 'My Images',
+    sidebar: {
+        upload: 'Upload Image',
+        history: 'Image List',
+        nodes: 'Storage Config',
+    },
     addNode: 'Add New Interface',
     noNodes: 'No nodes, please add',
     refresh: 'Refresh',
@@ -163,12 +169,17 @@ export default {
     darkMode: 'Dark Mode',
     lightMode: 'Dark Mode',
     openMode: 'Open Mode',
+    uiMode: 'UI Mode',
     automation: 'Automation',
     autoInject: 'Auto Inject URL after Upload',
     openModes: {
       tab: 'New Tab',
       window: 'Popup Window',
       action: 'Built-in Popup',
+    },
+    uiModes: {
+      classic: 'Classic Layout',
+      console: 'Console Layout',
     },
     desktopLink: {
       title: 'Desktop Link',

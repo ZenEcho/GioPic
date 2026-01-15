@@ -122,18 +122,18 @@ onMounted(() => {
 
                     <button v-if="isBatchMode && hasSelected" @click="deleteSelected"
                         class="text-xs font-medium text-white bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg transition-colors flex items-center gap-2 shadow-sm shadow-red-500/20">
-                        <div class="i-carbon-trash-can" />
+                        <div class="i-ph-trash" />
                         {{ t('home.history.deleteSelected') }}
                     </button>
 
                     <button v-if="displayList.length > 0 && (searchQuery || filterConfig)" @click="deleteFilteredRecords"
                         class="text-xs font-medium text-orange-500 hover:text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900/20 px-4 py-2 rounded-lg transition-colors flex items-center gap-2">
-                        <div class="i-carbon-trash-can" />
+                        <div class="i-ph-trash" />
                         {{ t('home.history.deleteFiltered') }}
                     </button>
                     <button @click="historyStore.clearHistory()"
                         class="text-xs font-medium text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 px-4 py-2 rounded-lg transition-colors flex items-center gap-2">
-                        <div class="i-carbon-clean" />
+                        <div class="i-ph-broom" />
                         {{ t('home.history.clear') }}
                     </button>
                 </div>

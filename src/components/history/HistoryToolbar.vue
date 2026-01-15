@@ -31,7 +31,7 @@ const { t } = useI18n()
                 class="flex-1 rounded-xl shadow-sm border-0"
             >
                 <template #prefix>
-                    <div class="i-carbon-search text-gray-400 text-lg" />
+                    <div class="i-ph-magnifying-glass text-gray-400 text-lg" />
                 </template>
             </n-input>
         </div>

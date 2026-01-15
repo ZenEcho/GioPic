@@ -18,6 +18,7 @@ const emit = defineEmits<{
     (e: 'upload-item', id: string): void
     (e: 'retry-item', id: string): void
     (e: 'remove-item', id: string): void
+    (e: 'open-history'): void
 }>()
 
 const { t } = useI18n()
@@ -71,30 +72,32 @@ function copyLink(url: string, thumbUrl?: string) {
 
 <template>
     <div
-        class="max-md:h-[calc(100vh-466px)] p-6 m-4 md:m-6 mb-[86px] flex flex-col bg-white dark:bg-gray-800 rounded-[24px] shadow-sm border border-gray-100 dark:border-gray-700 flex-shrink-0 transition-colors duration-300 overflow-hidden">
-        <div class="flex items-center justify-between mb-4 flex-shrink-0">
+        class="flex flex-col flex-shrink-0 transition-colors duration-300 overflow-hidden bg-white dark:bg-gray-800 rounded-[24px] shadow-sm border border-gray-100 dark:border-gray-700">
+        <div class="flex items-center justify-between p-4 md:p-6 pb-2 flex-shrink-0">
             <div class="text-lg font-black italic text-gray-800 dark:text-white">{{ t('home.history.uploadQueue') }}
             </div>
             <div class="flex items-center gap-2">
                 <button v-if="props.uploadQueue.length > 0" @click="emit('upload-all')"
                     class="giopic-icon-btn w-8 h-8 bg-primary text-white" :title="t('home.upload.uploadAll')">
-                    <div class="i-carbon-upload text-sm" />
+                    <div class="i-ph-upload-simple text-sm" />
                 </button>
                 <button v-if="props.uploadQueue.length > 0" @click="emit('clear-all')"
                     class="giopic-icon-btn w-8 h-8 bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 hover:bg-red-50 hover:text-red-500"
                     :title="t('home.upload.clearAll')">
-                    <div class="i-carbon-trash-can text-sm" />
+                    <div class="i-ph-trash text-sm" />
                 </button>
                 <div class="w-px h-4 bg-gray-200 dark:bg-gray-700 mx-1"></div>
-                <button @click="router.push('/history')"
+                <button @click="emit('open-history')"
                     class="giopic-text-link text-xs font-bold text-gray-400 hover:text-primary flex items-center">
                     {{ t('home.history.title') }}
-                    <div class="i-carbon-arrow-right" />
+                    <div class="i-ph-arrow-right" />
                 </button>
             </div>
         </div>
 
-        <div class=" md:w-[288px] flex-1 overflow-y-auto space-y-4 pr-1 -mr-1 custom-scrollbar">
+        <div class="verflow-y-auto space-y-4 px-4 md:px-6 pb-4 md:pb-6 custom-scrollbar"
+        :class="themeStore.uiMode != 'console' ? 'flex-col' : 'flex-row'"
+        >
             <!-- 正在上传的队列 -->
             <div v-for="item in props.uploadQueue" :key="item.id"
                 class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-3 border border-gray-100 dark:border-gray-700 relative group">
@@ -103,7 +106,7 @@ function copyLink(url: string, thumbUrl?: string) {
                         class="w-12 h-12 rounded-lg object-cover bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-600" />
                     <div class="flex-1 min-w-0">
                         <div class="font-bold text-sm truncate text-gray-700 dark:text-gray-200">{{ item.file.name
-                        }}
+                            }}
                         </div>
                         <div class="flex items-center justify-between mt-1">
                             <div class="text-xs text-gray-400 dark:text-gray-500">
@@ -117,17 +120,17 @@ function copyLink(url: string, thumbUrl?: string) {
                                     @click="emit('upload-item', item.id)"
                                     class="giopic-icon-btn p-1 text-primary hover:bg-primary/10"
                                     :title="t('home.upload.start')">
-                                    <div class="i-carbon-play text-xs" />
+                                    <div class="i-ph-play text-xs" />
                                 </button>
                                 <button v-if="item.status === 'error'" @click="emit('retry-item', item.id)"
                                     class="giopic-icon-btn p-1 text-primary hover:bg-primary/10"
                                     :title="t('home.upload.retry')">
-                                    <div class="i-carbon-renew text-xs" />
+                                    <div class="i-ph-arrow-clockwise text-xs" />
                                 </button>
                                 <button @click="emit('remove-item', item.id)"
                                     class="giopic-icon-btn p-1 text-red-500 hover:bg-red-50"
                                     :title="t('home.upload.remove')">
-                                    <div class="i-carbon-close text-xs" />
+                                    <div class="i-ph-x text-xs" />
                                 </button>
                             </div>
                         </div>
@@ -152,17 +155,11 @@ function copyLink(url: string, thumbUrl?: string) {
                     </div>
                 </div>
             </div>
-
-            <div v-if="props.uploadQueue.length === 0"
-                class="flex items-center justify-center h-20 text-gray-300 dark:text-gray-600 text-sm">
-                {{ t('home.history.empty') }}
-            </div>
-
-            <!-- Success Results Section -->
+            <!-- 成功 -->
             <div v-if="successTasks.length > 0" class="mt-6 border-t border-gray-100 dark:border-gray-700 pt-4">
                 <div class="mb-3 flex items-center justify-between">
                     <div class="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2">
-                        <div class="i-carbon-checkmark-outline" />
+                        <div class="i-ph-check-circle" />
                         {{ t('home.upload.status.success') }}
                     </div>
 
@@ -193,11 +190,17 @@ function copyLink(url: string, thumbUrl?: string) {
                         <button @click="copyLink(task.url, task.thumbUrl)"
                             class="giopic-icon-btn p-1.5 text-gray-400 hover:text-primary hover:bg-white dark:hover:bg-gray-600 shadow-sm"
                             :title="t('common.copy')">
-                            <div class="i-carbon-copy text-sm" />
+                            <div class="i-ph-copy text-sm" />
                         </button>
                     </div>
                 </div>
             </div>
+            <div v-if="props.uploadQueue.length === 0"
+                class="flex items-center justify-center h-20 text-gray-300 dark:text-gray-600 text-sm">
+                {{ t('home.history.empty') }}
+            </div>
+
+
         </div>
     </div>
 

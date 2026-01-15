@@ -49,7 +49,7 @@ function onFileChange(e: Event) {
             class="text-center z-10 pointer-events-none transform transition-transform duration-300 group-hover:scale-105">
             <div class="w-24 h-24 bg-primary rounded-[28px] mx-auto mb-6 flex items-center justify-center shadow-xl text-white transition-all duration-300"
                 :class="currentHover ? 'animate-bounce scale-110' : 'shadow-primary/30 group-hover:shadow-primary/50 group-hover:-translate-y-2'">
-                <div class="i-carbon-cloud-upload text-6xl" />
+                <div class="i-ph-cloud-arrow-up text-6xl" />
             </div>
             <h2 class="text-3xl font-black text-gray-800 dark:text-white mb-3 tracking-tight">{{
                 t('home.dropZone.title') }}</h2>

@@ -1,6 +1,6 @@
 export default {
   app: {
-    name: 'GIOPIC',
+    name: 'GIOPIC ',
     nameSuffix: 'SYNC',
   },
   providers: {
@@ -26,6 +26,12 @@ export default {
   },
   home: {
     nodes: '分发节点',
+    myImages: '我的图片',
+    sidebar: {
+        upload: '上传图片',
+        history: '图片列表',
+        nodes: '存储配置',
+    },
     addNode: '添加新接口',
     noNodes: '暂无节点，请添加',
     refresh: '刷新',
@@ -163,12 +169,17 @@ export default {
     darkMode: '深色模式',
     lightMode: '浅色模式',
     openMode: '打开方式',
+    uiMode: '界面布局',
     automation: '自动化',
     autoInject: '上传成功后自动注入',
     openModes: {
       tab: '新标签页',
       window: '弹窗窗口',
       action: '内置弹窗',
+    },
+    uiModes: {
+      classic: '经典布局',
+      console: '控制台布局',
     },
     desktopLink: {
       title: '桌面联动',

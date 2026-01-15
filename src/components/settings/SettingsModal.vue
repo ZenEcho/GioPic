@@ -186,14 +186,14 @@ async function checkVersion() {
                             :class="!themeStore.isDark ? 'text-white' : 'border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'"
                             :style="!themeStore.isDark ? { backgroundColor: primaryColor } : {}"
                             @click="themeStore.isDark = false">
-                            <div class="i-carbon-sun" /> {{ t('settings.lightMode') }}
+                            <div class="i-ph-sun" /> {{ t('settings.lightMode') }}
                         </button>
                         <button
                             class="flex-1 py-1.5 rounded-md transition-all font-medium text-xs flex items-center justify-center gap-2"
                             :class="themeStore.isDark ? 'text-white' : 'border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'"
                             :style="themeStore.isDark ? { backgroundColor: primaryColor } : {}"
                             @click="themeStore.isDark = true">
-                            <div class="i-carbon-moon" /> {{ t('settings.darkMode') }}
+                            <div class="i-ph-moon" /> {{ t('settings.darkMode') }}
                         </button>
                     </div>
                 </div>
@@ -230,6 +230,27 @@ async function checkVersion() {
                     </div>
                 </div>
 
+                <!-- 界面布局 -->
+                <div>
+                    <div class="text-sm font-bold text-gray-500 mb-2">{{ t('settings.uiMode') }}</div>
+                    <div class="flex gap-2">
+                        <button
+                            class="giopic-link-btn giopic-link-btn-primary flex-1 py-2 border font-medium text-sm"
+                            :class="themeStore.uiMode === 'classic' ? 'text-white' : 'border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'"
+                            :style="themeStore.uiMode === 'classic' ? { backgroundColor: primaryColor } : {}"
+                            @click="themeStore.setUiMode('classic')">
+                            {{ t('settings.uiModes.classic') }}
+                        </button>
+                        <button
+                            class="giopic-link-btn giopic-link-btn-primary flex-1 py-2 border font-medium text-sm"
+                            :class="themeStore.uiMode === 'console' ? 'text-white' : 'border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'"
+                            :style="themeStore.uiMode === 'console' ? { backgroundColor: primaryColor } : {}"
+                            @click="themeStore.setUiMode('console')">
+                            {{ t('settings.uiModes.console') }}
+                        </button>
+                    </div>
+                </div>
+
                 <!-- 侧边栏设置 -->
                 <div>
                     <div class="text-sm font-bold text-gray-500 mb-2">{{ t('settings.sidebar') }}</div>
@@ -237,7 +258,7 @@ async function checkVersion() {
                         class="giopic-link-btn giopic-link-btn-primary w-full py-2 border font-medium text-sm flex items-center justify-center gap-2"
                         :class="'border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'"
                         @click="showSidebarSettings = true">
-                        <div class="i-carbon-settings-adjust" /> {{ t('settings.sidebar') }}
+                        <div class="i-ph-sliders-horizontal" /> {{ t('settings.sidebar') }}
                     </button>
                 </div>
 
@@ -249,7 +270,7 @@ async function checkVersion() {
                             class="giopic-icon-btn w-8 h-8 rounded-full"
                             :style="{ backgroundColor: color.primary }" @click="themeStore.setThemeColor(key)">
                             <div v-if="themeStore.currentColor === key"
-                                class="i-carbon-checkmark text-white text-lg font-bold" />
+                                class="i-ph-check text-white text-lg font-bold" />
                         </button>
                     </div>
                 </div>
@@ -332,7 +353,7 @@ async function checkVersion() {
                                 t('settings.about.openSource') }}</span>
                             <a href="https://github.com/ZenEcho/GioPic_Web_Extension/" target="_blank"
                                 class="text-sm text-blue-500 hover:underline flex items-center gap-1">
-                                <div class="i-carbon-logo-github" /> GitHub
+                                <div class="i-ph-github-logo" /> GitHub
                             </a>
                         </div>
                     </div>

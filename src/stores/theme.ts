@@ -5,6 +5,7 @@ import { db } from '@/utils/storage'
 import browser from 'webextension-polyfill'
 
 export type ThemeColor = 'blue' | 'green' | 'purple' | 'orange' | 'red' 
+export type UiMode = 'classic' | 'console'
 
 export const themeColors: Record<ThemeColor, { primary: string, hover: string, pressed: string, suppl: string }> = {
   blue: {
@@ -44,6 +45,7 @@ export const themeColors: Record<ThemeColor, { primary: string, hover: string, p
 export const useThemeStore = defineStore('theme', () => {
   const currentColor = ref<ThemeColor>('blue')
   const isDark = ref(false)
+  const uiMode = ref<UiMode>('classic')
 
   // Load initial state
   db.get<ThemeColor>('giopic-theme-color').then(color => {
@@ -54,6 +56,12 @@ export const useThemeStore = defineStore('theme', () => {
   browser.storage.local.get('giopic-dark-mode').then(res => {
       const mode = res['giopic-dark-mode']
       if (mode === 'true') isDark.value = true
+  })
+
+  db.get<UiMode>('giopic-ui-mode').then(mode => {
+      if (mode === 'classic' || mode === 'console') {
+        uiMode.value = mode
+      }
   })
 
   watch(isDark, (val) => {
@@ -99,12 +107,19 @@ export const useThemeStore = defineStore('theme', () => {
     isDark.value = !isDark.value
   }
 
+  function setUiMode(mode: UiMode) {
+    uiMode.value = mode
+    db.set('giopic-ui-mode', mode)
+  }
+
   return {
     currentColor,
     isDark,
+    uiMode,
     naiveTheme,
     themeOverrides,
     setThemeColor,
     toggleDark,
+    setUiMode,
   }
 })

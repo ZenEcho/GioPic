@@ -150,7 +150,7 @@ async function handleInject(url: string) {
                                 :img-props="{ class: 'w-full h-full object-cover transition-transform duration-500 group-hover:scale-105' }">
                                 <template #placeholder>
                                     <div class="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-800 text-gray-300">
-                                        <div class="i-carbon-image text-2xl" />
+                                        <div class="i-ph-image text-2xl" />
                                     </div>
                                 </template>
                             </n-image>
@@ -180,13 +180,13 @@ async function handleInject(url: string) {
                                         class="giopic-icon-btn w-9 h-9 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-200 hover:text-primary hover:scale-110 shadow-lg"
                                         :title="t('common.inject')"
                                         @click.stop="handleInject(record.url)">
-                                        <div class="i-carbon-magic-wand text-lg" />
+                                        <div class="i-ph-magic-wand text-lg" />
                                     </button>
                                     <button
                                         class="giopic-icon-btn w-9 h-9 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-200 hover:text-primary hover:scale-110 shadow-lg"
                                         :title="t('common.copy')"
                                         @click.stop="handleCopy(formatLink(record.url, copyFormat))">
-                                        <div class="i-carbon-copy text-lg" />
+                                        <div class="i-ph-copy text-lg" />
                                     </button>
                                 </div>
 
@@ -196,13 +196,13 @@ async function handleInject(url: string) {
                                         class="giopic-icon-btn w-8 h-8 bg-white/90 dark:bg-gray-800/90 text-gray-500 dark:text-gray-400 hover:text-primary hover:scale-110 shadow-md"
                                         :title="t('common.open')"
                                         @click.stop>
-                                        <div class="i-carbon-launch" />
+                                        <div class="i-ph-arrow-square-out" />
                                     </a>
                                     <button
                                         class="giopic-icon-btn w-8 h-8 bg-white/90 dark:bg-gray-800/90 text-gray-500 dark:text-gray-400 hover:text-red-500 hover:scale-110 shadow-md"
                                         :title="t('common.delete')"
                                         @click.stop="emit('deleteRecord', record.id)">
-                                        <div class="i-carbon-trash-can" />
+                                        <div class="i-ph-trash" />
                                     </button>
                                 </div>
                             </div>
@@ -240,7 +240,7 @@ async function handleInject(url: string) {
         <!-- Empty State -->
         <div v-else class="flex-1 flex flex-col items-center justify-center text-gray-300 dark:text-gray-600">
             <div class="w-24 h-24 bg-gray-50 dark:bg-gray-800 rounded-full flex items-center justify-center mb-4">
-                <div class="i-carbon-image-search text-4xl opacity-50" />
+                <div class="i-ph-image-square text-4xl opacity-50" />
             </div>
             <div class="text-sm font-medium">{{ t('home.history.empty') }}</div>
         </div>

@@ -117,11 +117,11 @@ function confirmImport() {
             <div class="flex flex-row items-center gap-1">
                 <button class="giopic-icon-btn text-gray-400 hover:text-primary text-xl"
                     @click="themeStore.isDark = !themeStore.isDark">
-                    <div :class="themeStore.isDark ? 'i-carbon-moon' : 'i-carbon-sun'" />
+                    <div :class="themeStore.isDark ? 'i-ph-moon' : 'i-ph-sun'" />
                 </button>
                 <button class="giopic-icon-btn text-gray-400 hover:text-primary text-xl"
                     @click.stop="emit('openSettings')">
-                    <div class="i-carbon-settings" />
+                    <div class="i-ph-gear" />
                 </button>
             </div>
         </div>
@@ -135,7 +135,7 @@ function confirmImport() {
                         <button v-for="(color, key) in themeColors" :key="key" class="giopic-icon-btn w-3 h-3 mx-[1px]"
                             :style="{ backgroundColor: color.primary }" @click="themeStore.setThemeColor(key)">
                             <div v-if="themeStore.currentColor === key"
-                                class="i-carbon-checkmark text-white text-lg font-bold" />
+                                class="i-ph-check text-white text-lg font-bold" />
                         </button>
                     </div>
                 </div>
@@ -144,11 +144,11 @@ function confirmImport() {
                  
                     <button class="giopic-icon-btn text-gray-400 hover:text-primary text-xl" :title="t('home.refresh')"
                         @click.stop="handleRefresh">
-                        <div class="i-carbon-update-now" />
+                        <div class="i-ph-arrows-clockwise" />
                     </button>
                     <button class="giopic-icon-btn text-gray-400 hover:text-primary text-xl" :title="t('home.shareAll')"
                         @click.stop="handleShareAll">
-                        <div class="i-carbon-share" />
+                        <div class="i-ph-share-network" />
                     </button>
                 </div>
 
@@ -162,11 +162,11 @@ function confirmImport() {
                     <div class="flex justify-between items-start mb-2">
                         <div class="font-bold text-gray-800 dark:text-gray-100 truncate pr-4">{{ config.name }}</div>
                         <div v-if="props.selectedIds.includes(config.id)" class="text-primary">
-                            <div class="i-carbon-checkmark-filled text-lg" />
+                            <div class="i-ph-check-circle-fill text-lg" />
                         </div>
                         <div v-else
                             class="text-gray-200 dark:text-gray-600 group-hover:text-gray-300 dark:group-hover:text-gray-500">
-                            <div class="i-carbon-radio-button text-lg" />
+                            <div class="i-ph-circle text-lg" />
                         </div>
                     </div>
                     <div class="flex justify-between items-end">
@@ -198,12 +198,12 @@ function confirmImport() {
             <div class="mt-4 flex gap-3 flex-shrink-0">
                 <button @click="handleImport"
                     class="rounded-lg flex-1 py-3 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 font-medium hover:border-primary hover:text-primary   flex items-center justify-center gap-2">
-                    <div class="i-carbon-document-import w-4 h-4" />
+                    <div class="i-ph-file-arrow-up w-4 h-4" />
                     {{ t('home.import') }}
                 </button>
                 <button @click="emit('add')"
                     class=" rounded-lg flex-[2] py-3 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 font-medium hover:border-primary hover:text-primary   flex items-center justify-center gap-2">
-                    <div class="i-carbon-add-filled w-4 h-4" />
+                    <div class="i-ph-plus-circle-fill w-4 h-4" />
                     {{ t('home.addNode') }}
                 </button>
             </div>
