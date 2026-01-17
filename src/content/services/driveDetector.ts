@@ -36,13 +36,14 @@ export const detectors = {
     if (!isTokensPage) return null
     if (isIgnored()) return null
 
+    const lskyv2_giopicToken = await waitForSelector('#lskyv2_giopic', 2200) //兰空v2主题专属
     const tokenCreateEl = await waitForSelector('#token-create', 2200)
     const btnEl = await waitForSelector('.n-card__content .n-button__content', 2200)
     const btnText = btnEl?.textContent?.trim()
-    
+
     if (tokenCreateEl) {
       return { type: 'lsky', version: 'v1' }
-    } else if (btnText === '创建令牌') {
+    } else if (btnText === '创建令牌' || lskyv2_giopicToken) {
       return { type: 'lsky', version: 'v2' }
     }
     return null
@@ -77,7 +78,7 @@ export const detectors = {
     const hasGrid = document.querySelector('#myDataGrid') !== null
     const hasEasyImage = document.querySelector('a[href="https://png.cm/"]') !== null
     const hasGithub = document.querySelector('a[href="https://github.com/icret/EasyImages2.0"]') !== null
-    
+
     if (isAdmin && hasGrid && hasEasyImage && hasGithub) {
       if (!isIgnored()) {
         return { type: 'easyimages' }

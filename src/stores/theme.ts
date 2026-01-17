@@ -5,7 +5,7 @@ import { db } from '@/utils/storage'
 import browser from 'webextension-polyfill'
 
 export type ThemeColor = 'blue' | 'green' | 'purple' | 'orange' | 'red' 
-export type UiMode = 'classic' | 'console'
+export type UiMode = 'classic' | 'console' | 'center' | 'simple'
 
 export const themeColors: Record<ThemeColor, { primary: string, hover: string, pressed: string, suppl: string }> = {
   blue: {
@@ -59,7 +59,7 @@ export const useThemeStore = defineStore('theme', () => {
   })
 
   db.get<UiMode>('giopic-ui-mode').then(mode => {
-      if (mode === 'classic' || mode === 'console') {
+      if (mode === 'classic' || mode === 'console' || mode === 'center' || mode === 'simple') {
         uiMode.value = mode
       }
   })

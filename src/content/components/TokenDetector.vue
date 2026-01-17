@@ -126,7 +126,7 @@ const handleAddToAppLsky = async () => {
 
 const listenForXsrfToken = () => {
   const listener = async (request: any) => {
-    if (request.XSRF_TOKEN) {
+    if (request.XSRF_TOKEN || request.Authorization) {
       browser.runtime.onMessage.removeListener(listener)
       try {
         const isV2 = lskyVersion.value === 'v2'
@@ -162,6 +162,7 @@ const listenForXsrfToken = () => {
             'content-type': 'application/json',
             'X-Requested-With': 'XMLHttpRequest',
             'X-XSRF-TOKEN': request.XSRF_TOKEN,
+            'Authorization': request.Authorization,
           },
           body: JSON.stringify(data),
           method: 'POST',

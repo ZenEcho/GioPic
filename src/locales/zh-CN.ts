@@ -29,13 +29,22 @@ export default {
   },
   home: {
     nodes: '分发节点',
+    nodeList: {
+      emptyDescription: '配置存储节点后即可开始上传。<br>支持多种存储策略组合。',
+    },
     myImages: '我的图片',
     sidebar: {
         upload: '上传图片',
         history: '图片列表',
         nodes: '存储配置',
     },
+    nav: {
+        upload: '上传',
+        history: '历史',
+        config: '配置',
+    },
     addNode: '添加新接口',
+    createFirstNode: '创建第一个节点',
     noNodes: '暂无节点，请添加',
     refresh: '刷新',
     dropZone: {
@@ -183,6 +192,8 @@ export default {
     uiModes: {
       classic: '经典布局',
       console: '控制台布局',
+      center: '中心布局',
+      simple: '极简布局',
     },
     desktopLink: {
       title: '桌面联动',

@@ -64,6 +64,7 @@ export async function getManifest() {
             "contextMenus",
             "notifications",
             "cookies",
+            "webRequest",
             "declarativeNetRequestWithHostAccess",
             "declarativeNetRequestFeedback"
         ],

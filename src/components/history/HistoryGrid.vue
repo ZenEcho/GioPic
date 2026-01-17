@@ -232,7 +232,7 @@ async function handleInject(url: string) {
             <div v-if="hasMore" ref="loadTrigger" class="py-6 flex justify-center">
                 <n-spin size="small" />
             </div>
-            <div v-else-if="displayList.length > 0" class="py-6 text-center text-xs text-gray-400 dark:text-gray-500 border-t border-dashed border-gray-100 dark:border-gray-700 mt-4">
+            <div v-else-if="displayList.length > 0" class="py-6 text-center text-xs text-gray-400 dark:text-gray-500  border-gray-100 dark:border-gray-700 mt-4">
                 {{ t('home.history.noMore') }}
             </div>
         </div>

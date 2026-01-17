@@ -29,13 +29,22 @@ export default {
   },
   home: {
     nodes: 'Nodes',
+    nodeList: {
+      emptyDescription: 'Upload images after configuring storage nodes.<br>Supports multiple storage strategy combinations.',
+    },
     myImages: 'My Images',
     sidebar: {
         upload: 'Upload Image',
         history: 'Image List',
         nodes: 'Storage Config',
     },
+    nav: {
+        upload: 'Upload',
+        history: 'History',
+        config: 'Config',
+    },
     addNode: 'Add New Interface',
+    createFirstNode: 'Create First Node',
     noNodes: 'No nodes, please add',
     refresh: 'Refresh',
     dropZone: {
@@ -183,6 +192,8 @@ export default {
     uiModes: {
       classic: 'Classic Layout',
       console: 'Console Layout',
+      center: 'Center Layout',
+      simple: 'Simple Layout',
     },
     desktopLink: {
       title: 'Desktop Link',

@@ -5,6 +5,8 @@ import type { DriveConfig } from '@/types'
 
 import ClassicHome from '@/views/home/ClassicHome.vue'
 import ConsoleHome from '@/views/home/ConsoleHome.vue'
+import CenterHome from '@/views/home/CenterHome.vue'
+import SimpleHome from '@/views/home/SimpleHome.vue'
 import ConfigModal from '@/components/config/ConfigModal.vue'
 import SettingsModal from '@/components/settings/SettingsModal.vue'
 
@@ -52,7 +54,25 @@ function handleEditConfig(config: DriveConfig) {
         />
 
         <ConsoleHome 
-            v-else
+            v-else-if="themeStore.uiMode === 'console'"
+            :fileQueue="fileQueue"
+            @filesDropped="handleFilesDropped"
+            @addConfig="handleAddConfig"
+            @editConfig="handleEditConfig"
+            @openSettings="showSettingsModal = true"
+        />
+
+        <CenterHome 
+            v-else-if="themeStore.uiMode === 'center'"
+            :fileQueue="fileQueue"
+            @filesDropped="handleFilesDropped"
+            @addConfig="handleAddConfig"
+            @editConfig="handleEditConfig"
+            @openSettings="showSettingsModal = true"
+        />
+
+        <SimpleHome 
+            v-else-if="themeStore.uiMode === 'simple'"
             :fileQueue="fileQueue"
             @filesDropped="handleFilesDropped"
             @addConfig="handleAddConfig"

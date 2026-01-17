@@ -7,6 +7,88 @@ import i18n from '@/i18n'
 import type { DriveConfig } from '@/types'
 import { getDesktopLinkStatus, setDesktopLinkEnabled } from './desktopLink'
 
+const authTokenCache: Record<string, string> = {}
+
+// 定义抓取规则接口
+interface TokenCaptureRule {
+    match: string | RegExp; // URL 匹配规则
+    header: string;         // 要抓取的 Header 名称（小写）
+}
+
+// 通用配置规则列表
+// 可以在这里添加更多适配规则
+const CAPTURE_RULES: TokenCaptureRule[] = [
+    { match: '/user/tokens', header: 'authorization' },
+    // 示例：添加更多规则
+    // { match: '/api/v1/auth', header: 'x-auth-token' },
+]
+
+export function startAuthTokenMonitor() {
+    // 监听请求头，捕获 Authorization
+    // 注意：需要 'webRequest' 权限和 host 权限
+    const filter = { urls: ["<all_urls>"] }
+    const extraInfoSpec: any[] = ["requestHeaders"]
+
+    // 兼容处理：优先使用 browser 对象，如果 webRequest 不存在则尝试 chrome 对象
+    // 在某些 MV3 环境下，webextension-polyfill 可能未正确暴露 webRequest
+    const webRequest = browser?.webRequest || (globalThis as any).chrome?.webRequest
+
+    if (!webRequest) {
+        console.warn('GioPic: webRequest API is not available. Authorization header monitoring is disabled.')
+        return
+    }
+
+    // Chrome MV3 中读取 Authorization 可能需要 extraHeaders
+    if (webRequest.onBeforeSendHeaders.hasListener(() => { })) {
+        try {
+            extraInfoSpec.push('extraHeaders')
+        } catch { }
+    }
+
+    try {
+        webRequest.onBeforeSendHeaders.addListener(
+            (details: any) => {
+                if (details.requestHeaders) {
+                    try {
+                        const urlStr = details.url
+                        const urlObj = new URL(urlStr)
+                        const origin = urlObj.origin
+
+                        // 遍历规则，寻找匹配项
+                        for (const rule of CAPTURE_RULES) {
+                            const isMatch = typeof rule.match === 'string'
+                                ? urlStr.includes(rule.match)
+                                : rule.match.test(urlStr)
+
+                            if (isMatch) {
+                                const targetHeader = details.requestHeaders.find(
+                                    (h: any) => h.name.toLowerCase() === rule.header.toLowerCase()
+                                )
+
+                                if (targetHeader && targetHeader.value) {
+                                    // 如果该 origin 已经有了一个 Bearer token，且新获取的不是 Bearer，则跳过（避免降级）
+                                    // 除非是特定的路径匹配，我们假设规则匹配的优先级较高，或者可以更新 Token
+                                    const currentVal = targetHeader.value
+
+                                    // 更新缓存
+                                    authTokenCache[origin] = currentVal
+                                    console.log(`GioPic: Captured ${rule.header} for ${origin} from ${rule.match}`)
+                                }
+                                break;
+                            }
+                        }
+                    } catch { }
+                }
+            },
+            filter,
+            extraInfoSpec
+        )
+        console.log('GioPic: Authorization monitor started')
+    } catch (e) {
+        console.error('GioPic: Failed to start Authorization monitor', e)
+    }
+}
+
 export async function handleMessage(message: any, sender: Runtime.MessageSender) {
     if (message.type === 'UPDATE_OPEN_MODE') {
         await updateActionBehavior()
@@ -106,7 +188,7 @@ async function relayUploadSuccess(message: any, sender: Runtime.MessageSender) {
             })
             return
         }
-    } catch {}
+    } catch { }
     const tabs = await browser.tabs.query({ active: true, currentWindow: true })
     if (tabs && tabs.length > 0 && tabs[0]?.id) {
         await browser.tabs.sendMessage(tabs[0].id!, {
@@ -122,17 +204,66 @@ async function relayUploadSuccess(message: any, sender: Runtime.MessageSender) {
 
 async function handleGetXsrfToken(message: any, sender: Runtime.MessageSender) {
     const url = message.url as string
-    let token = ''
+    let xsrfToken = ''
+    let authToken = ''
+    let authorization = ''
+    console.log('Getting cookies for:', url);
+
     try {
-        const c1 = await browser.cookies.get({ url, name: 'XSRF-TOKEN' })
-        const c2 = token ? null : await browser.cookies.get({ url, name: 'XSRF_TOKEN' })
-        const raw = c1?.value || c2?.value || ''
-        token = raw ? decodeURIComponent(raw) : ''
-    } catch {
-        token = ''
+        // 获取该 url 下的所有 cookies，以便调试和查找
+        const cookies = await browser.cookies.getAll({ url })
+        console.log('Found cookies:', cookies.map(c => `${c.name}=${c.value}`).join('; '))
+
+        // 查找 XSRF Token
+        const xsrfTargetNames = ['XSRF-TOKEN', 'XSRF_TOKEN', 'csrf_token', 'csrftoken', 'xsrf-token', '_csrf']
+        const xsrfCookie = cookies.find(c =>
+            xsrfTargetNames.includes(c.name) ||
+            xsrfTargetNames.includes(c.name.toUpperCase()) ||
+            c.name.toLowerCase().includes('csrf') ||
+            c.name.toLowerCase().includes('xsrf')
+        )
+        if (xsrfCookie) {
+            xsrfToken = decodeURIComponent(xsrfCookie.value)
+        } else {
+            // 兼容旧逻辑：尝试获取名为 'cookie' 的值作为备选（虽然不太常见）
+            const c1 = cookies.find(c => c.name === 'cookie')
+            if (c1) xsrfToken = decodeURIComponent(c1.value)
+        }
+
+        // 查找 Authorization Token
+        // 很多时候 Authorization token 也会存在 Cookie 中，如 access_token, authorization, token 等
+        const authTargetNames = ['authorization', 'Authorization', 'access_token', 'auth_token', 'token', 'TOKEN', 'id_token']
+        const authCookie = cookies.find(c =>
+            authTargetNames.includes(c.name) ||
+            c.name.toLowerCase().includes('auth') ||
+            c.name.toLowerCase().includes('token')
+        )
+        if (authCookie) {
+            authToken = decodeURIComponent(authCookie.value)
+            // 如果取到的是 Bearer Token 但没有前缀，可能需要根据具体情况处理，
+            // 但这里只负责原样获取值。
+        }
+
+        // 尝试从 Request Header 缓存中获取 Authorization (优先级更高)
+        try {
+            const origin = new URL(url).origin
+            if (authTokenCache[origin]) {
+                authorization = authTokenCache[origin]
+            }
+        } catch (e) {
+            console.error('Error parsing URL for auth cache:', e)
+        }
+
+    } catch (e) {
+        console.error('Failed to get cookies:', e)
     }
+
     if (sender.tab?.id) {
-        browser.tabs.sendMessage(sender.tab.id, { XSRF_TOKEN: token })
+        browser.tabs.sendMessage(sender.tab.id, {
+            XSRF_TOKEN: xsrfToken,
+            authToken: authToken,
+            Authorization: authorization
+        })
     }
 }
 
@@ -178,7 +309,7 @@ async function handleRegisterContent(sender: Runtime.MessageSender) {
     if (!tabId) return
     try {
         await browser.storage.local.set({ 'giopic-last-content-tab': tabId })
-    } catch {}
+    } catch { }
 }
 
 function broadcastDesktopLinkStatus() {
@@ -188,5 +319,5 @@ function broadcastDesktopLinkStatus() {
             type: 'DESKTOP_LINK_STATUS',
             payload
         })
-    } catch {}
+    } catch { }
 }

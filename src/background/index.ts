@@ -2,7 +2,7 @@ import './polyfill'
 import browser from 'webextension-polyfill'
 import { setupContextMenus } from './services/contextMenu'
 import { getOpenMode, updateActionBehavior } from './services/actionManager'
-import { handleMessage } from './services/messageService'
+import { handleMessage, startAuthTokenMonitor } from './services/messageService'
 import { initDesktopLinkOnStartup } from './services/desktopLink'
 
 const POPUP_URL = 'index.html'
@@ -13,6 +13,7 @@ console.log('GioPic background script started')
 updateActionBehavior()
 setupContextMenus()
 initDesktopLinkOnStartup()
+startAuthTokenMonitor()
 
 browser.runtime.onMessage.addListener(handleMessage)
 

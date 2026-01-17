@@ -34,7 +34,7 @@ const uploadAreaData = ref<SidebarConfig>()
 
 const iframeShow = ref(false)
 const iframeRef = useTemplateRef<HTMLIFrameElement>('iframeRef')
-const iframeSrc = ref(browser.runtime.getURL('index.html'))
+const iframeSrc = ref('')
 const isHoveringHandle = ref(false)
 
 // Composable for drag logic

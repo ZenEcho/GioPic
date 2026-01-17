@@ -232,20 +232,13 @@ async function checkVersion() {
                 <!-- 界面布局 -->
                 <div>
                     <div class="text-sm font-bold text-gray-500 mb-2">{{ t('settings.uiMode') }}</div>
-                    <div class="flex gap-2">
-                        <button
-                            class="giopic-link-btn giopic-link-btn-primary flex-1 py-2 border font-medium text-sm"
-                            :class="themeStore.uiMode === 'classic' ? 'text-white' : 'border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'"
-                            :style="themeStore.uiMode === 'classic' ? { backgroundColor: primaryColor } : {}"
-                            @click="themeStore.setUiMode('classic')">
-                            {{ t('settings.uiModes.classic') }}
-                        </button>
-                        <button
-                            class="giopic-link-btn giopic-link-btn-primary flex-1 py-2 border font-medium text-sm"
-                            :class="themeStore.uiMode === 'console' ? 'text-white' : 'border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'"
-                            :style="themeStore.uiMode === 'console' ? { backgroundColor: primaryColor } : {}"
-                            @click="themeStore.setUiMode('console')">
-                            {{ t('settings.uiModes.console') }}
+                    <div class="grid grid-cols-2 gap-2">
+                        <button v-for="mode in ['classic', 'console', 'center', 'simple']" :key="mode"
+                            class="giopic-link-btn giopic-link-btn-primary flex-1 py-2 border font-medium text-sm rounded-lg transition-all"
+                            :class="themeStore.uiMode === mode ? 'text-white' : 'border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'"
+                            :style="themeStore.uiMode === mode ? { backgroundColor: primaryColor } : {}"
+                            @click="themeStore.setUiMode(mode as any)">
+                            {{ t(`settings.uiModes.${mode}`) }}
                         </button>
                     </div>
                 </div>
