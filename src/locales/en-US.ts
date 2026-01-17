@@ -18,6 +18,7 @@ export default {
     copy: 'Copy',
     inject: 'Inject',
     copied: 'Copied',
+    open: 'Open',
     copyFailed: 'Copy Failed',
     confirm: 'Confirm',
     success: 'Success',

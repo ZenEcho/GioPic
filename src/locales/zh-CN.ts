@@ -18,6 +18,7 @@ export default {
     copy: '复制',
     inject: '注入',
     copied: '已复制',
+    open: '打开',
     copyFailed: '复制失败',
     confirm: '确认',
     success: '成功',
