@@ -6,12 +6,17 @@ export default defineConfig({
         presetAttributify(),
         presetTypography(), // 中文：排版预设
         presetIcons({
-            collections: {
-                carbon: () => import('@iconify-json/carbon/icons.json').then(m => m.default || m),
-            },
+            // 自动加载已安装的图标库 (@iconify-json/ph)
         }),
     ],
     shortcuts: {
         'accent-text': 'text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500',
-    }
+    },
+    safelist: [
+        'i-ph-image',
+        'i-ph-cloud',
+        'i-ph-amazon-logo',
+        'i-ph-github-logo',
+        'i-ph-hard-drive',
+    ]
 })

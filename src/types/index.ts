@@ -1,4 +1,4 @@
-export type DriveType = 'lsky' | 'easyimages' | 'chevereto' | 'imgurl' | 'aliyun' | 'aws' | 'tencent' | 'imgurl' | 'smms' | 'hellohao' | 'imgur' | 'custom' ;
+export type DriveType = 'lsky' | 'easyimages' | 'chevereto' | 'imgurl' | 'aliyun' | 'aws' | 'tencent' | 'imgurl' | 'smms' | 'hellohao' | 'imgur' | 'custom' | 'github';
 
 export interface BaseConfig {
   id: string;
@@ -8,10 +8,10 @@ export interface BaseConfig {
 }
 
 export interface WebUploaderConfig extends BaseConfig {
-  type: 'lsky' | 'easyimages' | 'chevereto' | 'imgurl' | 'smms' | 'hellohao' | 'imgur' ;
+  type: 'lsky' | 'easyimages' | 'chevereto' | 'imgurl' | 'smms' | 'hellohao' | 'imgur';
   apiUrl: string;
   token: string;
-  strategyId?: string; 
+  strategyId?: string;
   version?: 'v1' | 'v2';
   // Extra fields for specific uploaders
   uid?: string; // For ImgURL

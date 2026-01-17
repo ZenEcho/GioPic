@@ -12,16 +12,15 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AclConfig: typeof import('./../components/config/AclConfig.vue')['default']
-    ClassicSidebar: typeof import('./../components/sidebar/ClassicSidebar.vue')['default']
-    ConfigList: typeof import('./../components/home/ConfigList.vue')['default']
+    ClassicSidebar: typeof import('./../components/home/sidebar/ClassicSidebar.vue')['default']
     ConfigModal: typeof import('./../components/config/ConfigModal.vue')['default']
-    ConsoleSidebar: typeof import('./../components/sidebar/ConsoleSidebar.vue')['default']
+    ConsoleSidebar: typeof import('./../components/home/sidebar/ConsoleSidebar.vue')['default']
     CorsConfig: typeof import('./../components/config/CorsConfig.vue')['default']
     DynamicConfigForm: typeof import('./../components/config/DynamicConfigForm.vue')['default']
     HistoryGrid: typeof import('./../components/history/HistoryGrid.vue')['default']
     HistoryHeader: typeof import('./../components/history/HistoryHeader.vue')['default']
-    HistoryList: typeof import('./../components/history/HistoryList.vue')['default']
     HistoryToolbar: typeof import('./../components/history/HistoryToolbar.vue')['default']
+    ImportConfigModal: typeof import('./../components/home/sidebar/ImportConfigModal.vue')['default']
     NButton: typeof import('naive-ui')['NButton']
     NCard: typeof import('naive-ui')['NCard']
     NCheckbox: typeof import('naive-ui')['NCheckbox']
@@ -46,7 +45,7 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     SetSidebar: typeof import('./../components/settings/SetSidebar.vue')['default']
     SettingsModal: typeof import('./../components/settings/SettingsModal.vue')['default']
-    Sidebar: typeof import('./../components/console/Sidebar.vue')['default']
-    UploadZone: typeof import('./../components/upload/UploadZone.vue')['default']
+    UploadQueue: typeof import('./../components/home/queue/UploadQueue.vue')['default']
+    UploadZone: typeof import('./../components/home/upload/UploadZone.vue')['default']
   }
 }

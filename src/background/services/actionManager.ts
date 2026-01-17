@@ -1,10 +1,10 @@
 import browser from 'webextension-polyfill'
-import { db } from '@/utils/storage'
 
 const POPUP_URL = 'index.html'
 
 export async function getOpenMode() {
-    return (await db.get('open-mode')) || 'tab'
+    const res = await browser.storage.local.get('open-mode')
+    return res['open-mode'] || 'tab'
 }
 
 export async function updateActionBehavior() {

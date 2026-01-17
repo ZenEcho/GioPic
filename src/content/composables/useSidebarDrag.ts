@@ -22,10 +22,38 @@ export function useSidebarDrag(
     let startY = 0
     let startTop = 0
     let uploadAreaRect: DOMRect | null = null
+    let hideTimer: number | undefined
+
+    const clearHideTimer = () => {
+        if (hideTimer === undefined) return
+        window.clearTimeout(hideTimer)
+        hideTimer = undefined
+    }
+
+    const hideSidebar = () => {
+        if (!uploadAreaEl.value || !uploadAreaData.value) return
+        const isLeft = uploadAreaData.value.position === 'Left'
+        const offset = uploadAreaData.value.width + 10
+        uploadAreaEl.value.style[isLeft ? 'left' : 'right'] = `-${offset}px`
+    }
+
+    const scheduleHideSidebar = () => {
+        if (hideTimer !== undefined) return
+        const closeTime = uploadAreaData.value?.closeTime ?? 0
+        if (closeTime <= 0) {
+            hideSidebar()
+            return
+        }
+        hideTimer = window.setTimeout(() => {
+            hideTimer = undefined
+            hideSidebar()
+        }, closeTime * 1000)
+    }
 
     const handleMouseDown = (e: MouseEvent) => {
         if (!uploadAreaEl.value || !uploadAreaData.value) return
         e.preventDefault()
+        clearHideTimer()
         
         startY = e.clientY
         startTop = uploadAreaEl.value.offsetTop
@@ -109,6 +137,7 @@ export function useSidebarDrag(
             const isInVerticalRange = y >= rect.top && y <= rect.bottom
             
             if (isInVerticalRange) {
+                clearHideTimer()
                 uploadAreaEl.value.style[isLeft ? 'left' : 'right'] = '0'
                 isMouseOverSidebar.value = true
                 return
@@ -135,12 +164,12 @@ export function useSidebarDrag(
         
         
         if (shouldShow) {
+            clearHideTimer()
             uploadAreaEl.value.style[isLeft ? 'left' : 'right'] = '0'
             isMouseOverSidebar.value = true
         } else {
             isMouseOverSidebar.value = false
-            const offset = uploadAreaData.value.width + 10
-            uploadAreaEl.value.style[isLeft ? 'left' : 'right'] = `-${offset}px`
+            scheduleHideSidebar()
         }
     }
 

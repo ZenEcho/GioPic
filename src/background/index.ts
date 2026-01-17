@@ -32,9 +32,17 @@ browser.action.onClicked.addListener(async (tab) => {
 })
 
 // 安装事件处理
-browser.runtime.onInstalled.addListener(() => {
+browser.runtime.onInstalled.addListener(async (details) => {
     console.log('GioPic installed')
     setupContextMenus()
+
+    if (details.reason === 'install') {
+        await browser.storage.local.set({
+            'giopic-auto-inject': true,
+            'giopic-locale': 'zh-CN',
+            'open-mode': 'tab'
+        })
+    }
 })
 
 browser.runtime.onStartup.addListener(() => {

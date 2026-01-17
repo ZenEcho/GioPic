@@ -83,34 +83,17 @@ onMounted(() => {
 <template>
     <div class="bg-[#F5F7FA] dark:bg-[#101014] flex flex-col p-4 md:p-8 overflow-y-scroll h-[90%]">
         <!-- Header -->
-        <HistoryHeader 
-            :isBatchMode="isBatchMode" 
-            :isAllSelected="isAllSelected" 
-            v-model:copyFormat="copyFormat"
-            @toggleBatchMode="toggleBatchMode"
-            @toggleSelectAll="toggleSelectAll"
-        />
+        <HistoryHeader :isBatchMode="isBatchMode" :isAllSelected="isAllSelected" v-model:copyFormat="copyFormat"
+            @toggleBatchMode="toggleBatchMode" @toggleSelectAll="toggleSelectAll" />
 
         <!-- Toolbar: Search, Sort, Filter -->
-        <HistoryToolbar 
-            v-model:searchQuery="searchQuery"
-            v-model:filterConfig="filterConfig"
-            v-model:sortBy="sortBy"
-            :configOptions="configOptions"
-            :sortOptions="sortOptions"
-        />
+        <HistoryToolbar v-model:searchQuery="searchQuery" v-model:filterConfig="filterConfig" v-model:sortBy="sortBy"
+            :configOptions="configOptions" :sortOptions="sortOptions" />
 
         <!-- Content -->
-        <HistoryGrid 
-            :displayList="displayList"
-            :isBatchMode="isBatchMode"
-            :selectedIds="selectedIds"
-            :copyFormat="copyFormat"
-            :hasMore="hasMore"
-            @toggleSelection="toggleSelection"
-            @deleteRecord="historyStore.removeRecord"
-            @loadMore="loadMore"
-        >
+        <HistoryGrid :displayList="displayList" :isBatchMode="isBatchMode" :selectedIds="selectedIds"
+            :copyFormat="copyFormat" :hasMore="hasMore" @toggleSelection="toggleSelection"
+            @deleteRecord="historyStore.removeRecord" @loadMore="loadMore">
             <template #footer>
                 <!-- Bottom Action Bar -->
                 <div v-if="historyStore.history.length > 0"
@@ -125,8 +108,8 @@ onMounted(() => {
                         <div class="i-ph-trash" />
                         {{ t('home.history.deleteSelected') }}
                     </button>
-
-                    <button v-if="displayList.length > 0 && (searchQuery || filterConfig)" @click="deleteFilteredRecords"
+                    <button v-if="displayList.length > 0 && (searchQuery || filterConfig)"
+                        @click="deleteFilteredRecords"
                         class="text-xs font-medium text-orange-500 hover:text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900/20 px-4 py-2 rounded-lg transition-colors flex items-center gap-2">
                         <div class="i-ph-trash" />
                         {{ t('home.history.deleteFiltered') }}
@@ -142,6 +125,4 @@ onMounted(() => {
     </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

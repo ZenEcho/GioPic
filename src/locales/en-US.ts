@@ -23,6 +23,8 @@ export default {
     success: 'Success',
     error: 'Error',
     deleteConfirm: 'Are you sure you want to delete this config?',
+    expand: 'Expand',
+    collapse: 'Collapse',
   },
   home: {
     nodes: 'Nodes',

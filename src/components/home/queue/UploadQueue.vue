@@ -95,9 +95,8 @@ function copyLink(url: string, thumbUrl?: string) {
             </div>
         </div>
 
-        <div class="verflow-y-auto space-y-4 px-4 md:px-6 pb-4 md:pb-6 custom-scrollbar"
-        :class="themeStore.uiMode != 'console' ? 'flex-col' : 'flex-row'"
-        >
+        <div class=" overflow-y-auto space-y-4 px-4 md:px-6 pb-4 md:pb-6 custom-scrollbar"
+            :class="themeStore.uiMode != 'console' ? 'flex-col' : 'flex-row'">
             <!-- 正在上传的队列 -->
             <div v-for="item in props.uploadQueue" :key="item.id"
                 class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-3 border border-gray-100 dark:border-gray-700 relative group">

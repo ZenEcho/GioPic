@@ -23,6 +23,8 @@ export default {
     success: '成功',
     error: '错误',
     deleteConfirm: '确定要删除这个配置吗？',
+    expand: '展开',
+    collapse: '折叠',
   },
   home: {
     nodes: '分发节点',

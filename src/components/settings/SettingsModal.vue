@@ -2,7 +2,6 @@
 import { useI18n } from 'vue-i18n'
 import { useThemeStore, themeColors } from '@/stores/theme'
 import { computed, ref, onMounted, onBeforeUnmount } from 'vue'
-import { db } from '@/utils/storage'
 import browser from 'webextension-polyfill'
 import SetSidebar from './SetSidebar.vue'
 
@@ -72,9 +71,9 @@ async function setDesktopLinkEnabled(val: boolean) {
 }
 
 onMounted(async () => {
-    const mode = await db.get('open-mode')
-    if (mode) {
-        openMode.value = mode
+    const res = await browser.storage.local.get('open-mode')
+    if (res['open-mode']) {
+        openMode.value = res['open-mode'] as string
     }
     const inject = await browser.storage.local.get('giopic-auto-inject')
     autoInject.value = !!inject['giopic-auto-inject']
@@ -93,7 +92,7 @@ async function setAutoInject(val: boolean) {
 
 async function setOpenMode(mode: string) {
     openMode.value = mode
-    await db.set('open-mode', mode)
+    await browser.storage.local.set({ 'open-mode': mode })
     try {
         await browser.runtime.sendMessage({ type: 'UPDATE_OPEN_MODE', mode })
     } catch (e) {
@@ -180,16 +179,16 @@ async function checkVersion() {
                 <!-- 外观设置 -->
                 <div>
                     <div class="text-sm font-bold text-gray-500 mb-2">{{ t('settings.appearance') }}</div>
-                    <div class="flex gap-2 bg-gray-100 dark:bg-gray-700/50 p-1 rounded-lg">
+                    <div class="flex gap-2 ">
                         <button
-                            class="flex-1 py-1.5 rounded-md transition-all font-medium text-xs flex items-center justify-center gap-2"
+                            class="giopic-link-btn giopic-link-btn-primary flex-1 py-2 border font-medium text-sm flex items-center justify-center gap-2"
                             :class="!themeStore.isDark ? 'text-white' : 'border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'"
                             :style="!themeStore.isDark ? { backgroundColor: primaryColor } : {}"
                             @click="themeStore.isDark = false">
                             <div class="i-ph-sun" /> {{ t('settings.lightMode') }}
                         </button>
                         <button
-                            class="flex-1 py-1.5 rounded-md transition-all font-medium text-xs flex items-center justify-center gap-2"
+                            class="giopic-link-btn giopic-link-btn-primary flex-1 py-2 border font-medium text-sm flex items-center justify-center gap-2"
                             :class="themeStore.isDark ? 'text-white' : 'border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'"
                             :style="themeStore.isDark ? { backgroundColor: primaryColor } : {}"
                             @click="themeStore.isDark = true">
