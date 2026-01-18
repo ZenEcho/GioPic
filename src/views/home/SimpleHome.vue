@@ -106,7 +106,7 @@ const primaryColor = computed(() => themeStore.themeOverrides?.common?.primaryCo
                         }" @contextmenu.prevent="emit('editConfig', config)" @dblclick="emit('editConfig', config)">
                     {{ config.name }}
                 </button>
-                <div v-if="configStore.configs.length > 0" class="flex items-center gap-2 ml-1">
+                <div class="flex items-center gap-2 ml-1">
                     <button v-if="configStore.selectedIds.length === 1" @click="() => {
                         const config = configStore.configs.find(c => c.id === configStore.selectedIds[0])
                         if (config) emit('editConfig', config)

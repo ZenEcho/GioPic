@@ -53,7 +53,7 @@ function copyLink(url: string, thumbUrl?: string) {
         class="flex flex-col flex-shrink-0 transition-colors duration-300 overflow-hidden bg-white dark:bg-gray-800 rounded-[24px] shadow-sm border border-gray-100 dark:border-gray-700">
         <div class="flex items-center justify-between p-4 md:p-6 pb-2 flex-shrink-0 gap-2">
             <div class="flex items-center gap-2 min-w-0">
-                <div class="text-lg font-black italic text-gray-800 dark:text-white truncate">
+                <div class="text-lg font-black italic text-gray-800 dark:text-white truncate px-1">
                     {{ t('home.history.uploadQueue') }}
                 </div>
           
@@ -76,7 +76,6 @@ function copyLink(url: string, thumbUrl?: string) {
                 </button>
             </div>
         </div>
-
         <div class=" overflow-y-auto space-y-4 px-4 md:px-6 pb-4 md:pb-6 custom-scrollbar"
             :class="themeStore.uiMode != 'console' ? 'flex-col' : 'flex-row'">
                   <div v-if="hasSuccessTask" class="hidden sm:flex bg-gray-100 dark:bg-gray-700 rounded-lg p-0.5">
