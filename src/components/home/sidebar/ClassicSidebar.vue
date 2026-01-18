@@ -5,7 +5,7 @@ import { useI18n } from 'vue-i18n'
 import type { DriveConfig } from '@/types'
 import { ref, computed } from 'vue'
 import { getStorageIcon } from '@/utils/icon'
-import { useSidebar } from '@/composables/home/useSidebar'
+import { useSidebar } from '@/composables/useSidebar'
 
 const props = defineProps<{
     selectedIds: string[]

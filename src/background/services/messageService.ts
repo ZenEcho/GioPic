@@ -164,14 +164,18 @@ async function handleFetchImageBlob(message: any) {
 async function relayUploadSuccess(message: any, sender: Runtime.MessageSender) {
     const senderTabId = sender.tab?.id
     if (senderTabId) {
-        await browser.tabs.sendMessage(senderTabId, {
-            type: 'UPLOAD_EVENT',
-            data: {
-                event: 'success',
-                id: message.id || 'relay',
-                payload: message.payload
-            }
-        })
+        try {
+            await browser.tabs.sendMessage(senderTabId, {
+                type: 'UPLOAD_EVENT',
+                data: {
+                    event: 'success',
+                    id: message.id || 'relay',
+                    payload: message.payload
+                }
+            })
+        } catch (e) {
+            console.warn('Failed to relay upload success to sender tab', e)
+        }
         return
     }
     try {
@@ -191,14 +195,18 @@ async function relayUploadSuccess(message: any, sender: Runtime.MessageSender) {
     } catch { }
     const tabs = await browser.tabs.query({ active: true, currentWindow: true })
     if (tabs && tabs.length > 0 && tabs[0]?.id) {
-        await browser.tabs.sendMessage(tabs[0].id!, {
-            type: 'UPLOAD_EVENT',
-            data: {
-                event: 'success',
-                id: message.id || 'relay',
-                payload: message.payload
-            }
-        })
+        try {
+            await browser.tabs.sendMessage(tabs[0].id!, {
+                type: 'UPLOAD_EVENT',
+                data: {
+                    event: 'success',
+                    id: message.id || 'relay',
+                    payload: message.payload
+                }
+            })
+        } catch (e) {
+            console.warn('Failed to relay upload success to active tab', e)
+        }
     }
 }
 
@@ -259,11 +267,15 @@ async function handleGetXsrfToken(message: any, sender: Runtime.MessageSender) {
     }
 
     if (sender.tab?.id) {
-        browser.tabs.sendMessage(sender.tab.id, {
-            XSRF_TOKEN: xsrfToken,
-            authToken: authToken,
-            Authorization: authorization
-        })
+        try {
+            await browser.tabs.sendMessage(sender.tab.id, {
+                XSRF_TOKEN: xsrfToken,
+                authToken: authToken,
+                Authorization: authorization
+            })
+        } catch (e) {
+            console.warn('Failed to send XSRF token to content script', e)
+        }
     }
 }
 

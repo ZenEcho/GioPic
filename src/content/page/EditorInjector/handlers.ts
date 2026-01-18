@@ -2,37 +2,37 @@ import type {
     CKEditor5Type,
     WangEditorType,
     CodeMirrorElementType
-} from './types';
+} from '../editorInjector/types';
 
 export function handleDiscuz(url: string): boolean {
-    const Discuz = document.getElementById("fastpostmessage") as HTMLTextAreaElement | HTMLInputElement | null;
-    const Discuz_Interactive_reply = document.getElementById("postmessage") as HTMLTextAreaElement | HTMLInputElement | null;
-    const Discuz_Advanced = document.getElementById("e_textarea");
+    const discuz = document.getElementById("fastpostmessage") as HTMLTextAreaElement | HTMLInputElement | null;
+    const discuzInteractiveReply = document.getElementById("postmessage") as HTMLTextAreaElement | HTMLInputElement | null;
+    const discuzAdvanced = document.getElementById("e_textarea");
 
-    if (Discuz_Interactive_reply) {
+    if (discuzInteractiveReply) {
         //回复楼层
-        Discuz_Interactive_reply.value += '[img]' + url + '[/img]';
+        discuzInteractiveReply.value += '[img]' + url + '[/img]';
         return true;
-    } else if (Discuz) {
+    } else if (discuz) {
         //回复楼主
-        Discuz.value += '[img]' + url + '[/img]';
+        discuz.value += '[img]' + url + '[/img]';
         return true;
     }
 
-    if (Discuz_Advanced && Discuz_Advanced.parentNode) {
+    if (discuzAdvanced && discuzAdvanced.parentNode) {
         //高级回复
-        let Discuz_Advanced_iframe: HTMLIFrameElement | null;
+        let discuzAdvancedIframe: HTMLIFrameElement | null;
         try {
-            Discuz_Advanced_iframe = Discuz_Advanced.parentNode.querySelector("iframe") as HTMLIFrameElement | null;
-            if (Discuz_Advanced_iframe && Discuz_Advanced_iframe.contentDocument) {
-                let bodyElement = Discuz_Advanced_iframe.contentDocument.body;
+            discuzAdvancedIframe = discuzAdvanced.parentNode.querySelector("iframe") as HTMLIFrameElement | null;
+            if (discuzAdvancedIframe && discuzAdvancedIframe.contentDocument) {
+                let bodyElement = discuzAdvancedIframe.contentDocument.body;
                 let img = document.createElement('img');
                 img.src = url;
                 bodyElement.appendChild(img);
                 return true;
             }
             else {
-                (Discuz_Advanced as HTMLTextAreaElement | HTMLInputElement).value += '[img]' + url + '[/img]';
+                (discuzAdvanced as HTMLTextAreaElement | HTMLInputElement).value += '[img]' + url + '[/img]';
                 return true;
             }
         } catch (error) {
@@ -54,13 +54,13 @@ export function handleCodeMirror5(url: string): boolean {
 }
 
 export function handleCodeMirror6(url: string): boolean {
-    let CodeMirror6 = document.querySelector(".cm-content");
-    if (CodeMirror6) {
+    let codeMirror6 = document.querySelector(".cm-content");
+    if (codeMirror6) {
         let item = document.createElement('div');
         item.className = "cm-line";
         item.dir = "auto";
         item.innerText = '![' + "image" + '](' + url + ')';
-        CodeMirror6.appendChild(item);
+        codeMirror6.appendChild(item);
         return true;
     }
     return false;
@@ -76,16 +76,16 @@ export function handleV2ex(url: string): boolean {
     }
 
     // 2. 处理回帖场景 (普通文本框)
-    const reply_content = document.getElementById("reply_content") as HTMLTextAreaElement | HTMLInputElement | null;
-    if (reply_content) {
+    const replyContent = document.getElementById("reply_content") as HTMLTextAreaElement | HTMLInputElement | null;
+    if (replyContent) {
         // V2EX 回帖通常支持 Markdown 或纯文本，直接追加 URL
         // 确保前有空格，避免粘连
-        const prefix = reply_content.value ? '\n' : '';
-        reply_content.value += `${prefix}${url}`;
+        const prefix = replyContent.value ? '\n' : '';
+        replyContent.value += `${prefix}${url}`;
         
         // 触发 input 事件以通知页面数据更新（针对某些响应式框架或验证逻辑）
         const inputEvent = new Event('input', { bubbles: true });
-        reply_content.dispatchEvent(inputEvent);
+        replyContent.dispatchEvent(inputEvent);
         return true;
     }
 
@@ -93,9 +93,9 @@ export function handleV2ex(url: string): boolean {
 }
 
 export function handleHalo(url: string): boolean {
-    let HaloEditor_Element = document.querySelector('.ProseMirror') as HTMLElement;
-    if (HaloEditor_Element) {
-        HaloEditor_Element.focus();
+    let haloEditorElement = document.querySelector('.ProseMirror') as HTMLElement;
+    if (haloEditorElement) {
+        haloEditorElement.focus();
         document.execCommand('insertImage', false, url);
         return true;
     }
@@ -133,10 +133,10 @@ export function handlePHPBB(url: string): boolean {
 
 export function handleGutenberg(url: string): boolean {
     try {
-        const Gutenberg = window.wp?.data.dispatch('core/block-editor');
-        if (Gutenberg) {
+        const gutenberg = window.wp?.data.dispatch('core/block-editor');
+        if (gutenberg) {
             const imageBlock = window.wp?.blocks.createBlock('core/image', { url: url });
-            Gutenberg.insertBlock(imageBlock);
+            gutenberg.insertBlock(imageBlock);
             return true;
         }
         return false;
@@ -147,9 +147,9 @@ export function handleGutenberg(url: string): boolean {
 
 export function handleTinyMCE(url: string): boolean {
     try {
-        let TinyMCE = window.tinymce?.activeEditor;
-        if (TinyMCE) {
-            TinyMCE.execCommand('mceInsertContent', false, url);
+        let tinyMCE = window.tinymce?.activeEditor;
+        if (tinyMCE) {
+            tinyMCE.execCommand('mceInsertContent', false, url);
             window.postMessage({ type: 'TinyMCEResponse', status: 'success', data: 'true' }, '*');
             return true;
         }
@@ -164,8 +164,8 @@ export function handleWangEditor(url: string): boolean {
         const editor = window.editor as WangEditorType | undefined;
         // Check if it matches WangEditor signature
         if (editor && typeof editor.getEditableContainer === 'function') {
-             const wangeditor_Element = editor.getEditableContainer();
-             if (wangeditor_Element) {
+             const wangEditorElement = editor.getEditableContainer();
+             if (wangEditorElement) {
                 editor.dangerouslyInsertHtml(url);
                 return true;
              }
@@ -207,9 +207,9 @@ export function handleCKEditor5(url: string): boolean {
 export function handleUEditor(url: string): boolean {
     try {
         const UE = window.UE;
-        let ueditor_Element = UE?.getEditor("editor_content");
-        if (ueditor_Element) {
-            ueditor_Element.execCommand('insertimage', {
+        let ueditorElement = UE?.getEditor("editor_content");
+        if (ueditorElement) {
+            ueditorElement.execCommand('insertimage', {
                 src: url,
             });
             return true;

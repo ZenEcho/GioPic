@@ -58,7 +58,8 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+      'util': fileURLToPath(new URL('./src/utils/nodeUtil.ts', import.meta.url))
     }
   }
 })

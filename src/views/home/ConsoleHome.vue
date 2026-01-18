@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useConfigStore } from '@/stores/config'
 import type { DriveConfig } from '@/types'
+import { useI18n } from 'vue-i18n'
 
 import ConsoleSidebar from '@/components/home/sidebar/ConsoleSidebar.vue'
 import UploadZone from '@/components/home/upload/UploadZone.vue'
@@ -20,6 +21,7 @@ const emit = defineEmits<{
     (e: 'openSettings'): void
 }>()
 
+const { t } = useI18n()
 const configStore = useConfigStore()
 const currentView = ref('upload')
 
@@ -47,7 +49,7 @@ function handleNavigate(view: 'upload' | 'history') {
                 <div class="i-ph-list text-xl" />
             </button>
             <div class="text-sm font-bold text-gray-700 dark:text-gray-200">
-                {{ currentView === 'upload' ? '上传' : '历史' }}
+                {{ currentView === 'upload' ? t('home.nav.upload') : t('home.nav.history') }}
             </div>
             <button class="p-2 -mr-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                 @click="emit('openSettings')">
@@ -112,12 +114,12 @@ function handleNavigate(view: 'upload' | 'history') {
             <button class="flex flex-col items-center gap-1 py-2 px-4 rounded-lg transition-colors"
                 :class="currentView === 'upload' ? 'text-primary' : 'text-gray-400'" @click="currentView = 'upload'">
                 <div class="i-ph-cloud-arrow-up text-xl" />
-                <span class="text-xs font-medium">上传</span>
+                <span class="text-xs font-medium">{{ t('home.nav.upload') }}</span>
             </button>
             <button class="flex flex-col items-center gap-1 py-2 px-4 rounded-lg transition-colors"
                 :class="currentView === 'history' ? 'text-primary' : 'text-gray-400'" @click="currentView = 'history'">
                 <div class="i-ph-image text-xl" />
-                <span class="text-xs font-medium">历史</span>
+                <span class="text-xs font-medium">{{ t('home.nav.history') }}</span>
             </button>
         </div>
     </div>

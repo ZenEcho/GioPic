@@ -3,7 +3,7 @@ import { useI18n } from 'vue-i18n'
 import { useThemeStore, themeColors } from '@/stores/theme'
 import { computed, ref, onMounted, onBeforeUnmount } from 'vue'
 import browser from 'webextension-polyfill'
-import SetSidebar from './SetSidebar.vue'
+import SidebarSettings from './SidebarSettings.vue'
 
 type DesktopLinkStatusType = 'disabled' | 'disconnected' | 'connecting' | 'connected' | 'error'
 
@@ -353,5 +353,5 @@ async function checkVersion() {
             </div>
         </div>
     </n-modal>
-    <SetSidebar v-model:show="showSidebarSettings" />
+    <SidebarSettings v-model:show="showSidebarSettings" />
 </template>

@@ -3,7 +3,7 @@ import { useI18n } from 'vue-i18n'
 import browser from 'webextension-polyfill'
 import { useConfigStore } from '@/stores/config'
 import { useHistoryStore } from '@/stores/history'
-import { TaskQueue } from '@/utils/task-queue'
+import { TaskQueue } from '@/utils/taskQueue'
 import { uploadImage } from '@/services/uploader'
 import type { QueueItem, UploadTask } from '@/types'
 

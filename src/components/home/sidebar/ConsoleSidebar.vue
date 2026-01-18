@@ -7,7 +7,7 @@ import type { DriveConfig } from '@/types'
 import { useDialog, useMessage } from 'naive-ui'
 import browser from 'webextension-polyfill'
 import { getStorageIcon } from '@/utils/icon'
-import { useSidebar } from '@/composables/home/useSidebar'
+import { useSidebar } from '@/composables/useSidebar'
 
 const props = defineProps<{
     selectedIds: string[],

@@ -1,27 +1,26 @@
 # GioPic
 
-GioPic 是一个功能强大的浏览器图片上传扩展，支持多种图床和对象存储服务。
-GioPic is a powerful browser extension for uploading images to various storage services.
+GioPic 是一个多节点、多图床的浏览器图片上传扩展，一次操作即可将图片同时分发到多个对象存储、图床或自建服务。
+
+GioPic is a multi-node image upload browser extension that can upload images to multiple providers (image hosts, object storages, GitHub and custom HTTP endpoints) at once.
 
 [![Chrome](https://img.shields.io/badge/Chromium-chrome-blue?style=for-the-badge&logo=googlechrome)](https://chromewebstore.google.com/detail/giopic/cjmhdboadkifegpfnflaflbjeehndmak)
 
-## 🌟 Features / 功能特性
+## 🌟 功能特性 / Features
 
-- **多图床支持 (Multi-Storage Support)**:
-  - Lsky Pro (兰空图床)
-  - EasyImages (简单图床)
-  - Chevereto
-  - Aliyun OSS (阿里云对象存储)
-  - AWS S3 & S3 Compatible Services
-  - Tencent COS (腾讯云对象存储)
-  - Qiniu Kodo (七牛云对象存储)
-- **便捷上传 (Easy Upload)**:
-  - 拖拽上传 (Drag & Drop)
-  - 粘贴上传 (Paste to Upload)
-  - 右键菜单上传 (Context Menu Upload)
-- **历史记录 (History Management)**: 查看和管理上传历史 (View and manage upload history).
-- **多语言 (Multi-language)**: 支持简体中文和英语 (English & Simplified Chinese).
-- **现代化界面 (Modern UI)**: 基于 Vue 3 + Naive UI 构建 (Built with Vue 3 and Naive UI).
+- **多节点分发 (Multi-node Delivery)**：配置多个「分发节点」，一次上传并行推送到多个目标。
+- **丰富图床与存储支持 (Rich Providers)**：
+  - Lsky Pro、EasyImages、Chevereto、ImgURL、Hellohao、SM.MS、Imgur
+  - Aliyun OSS、Tencent COS、AWS S3、GitHub 仓库、自定义 HTTP 接口
+- **便捷上传方式 (Easy Upload)**：
+  - 拖拽上传、点击选择、粘贴剪贴板图片
+  - 网页图片右键菜单「GioPic 上传图片」
+- **网页集成 (In-page Integration)**：
+  - 网页侧边可拖动 GioPic 手柄，点击后在页面内打开上传面板
+  - 浮动上传列表实时显示上传进度，一键复制或注入链接
+- **历史记录与批量管理 (History & Batch)**：支持搜索、筛选、排序和批量删除上传记录。
+- **云存储增强 (Cloud-friendly)**：内置 Aliyun / Tencent COS / AWS S3 的 CORS 与 ACL 可视化配置。
+- **多语言与多布局 (Multi-language & Layouts)**：简体中文 / English，经典 / 控制台 / 中心 / 极简布局，深色 / 浅色主题与多种主题色。
 
 ## 🔧 Supported Browsers / 支持的浏览器
 
@@ -49,7 +48,7 @@ GioPic is a powerful browser extension for uploading images to various storage s
 - [Chrome 扩展商店](https://chromewebstore.google.com/detail/giopic/cjmhdboadkifegpfnflaflbjeehndmak)
 - [Edge 扩展商店(待审核)](https://chromewebstore.google.com/detail/giopic/cjmhdboadkifegpfnflaflbjeehndmak)
 
-## � Usage Guide / 使用指南
+## 📖 Usage Guide / 使用指南
 
 ### Adding Image Storage / 添加图床
 
@@ -69,7 +68,7 @@ GioPic is a powerful browser extension for uploading images to various storage s
 For supported sites (like Lsky Pro, EasyImages), when you visit the site, GioPic may detect it and offer a "One-Click Add" button to automatically configure the extension.
 对于支持的站点（如兰空图床、简单图床），当您访问该站点时，GioPic 可能会检测到并提供 "一键添加" 按钮，自动配置扩展。
 
-## �💻 Development / 开发指南
+## 🧑‍💻 Development / 开发指南
 
 ### Prerequisites / 前置要求
 
@@ -98,14 +97,20 @@ pnpm dev
 pnpm build
 ```
 
+### Test / 测试
+
+```bash
+pnpm test
+```
+
 ### Adding New Image Host / 添加新图床
 
 To add support for a new image hosting service, you need to modify two files:
 添加对新图床的支持需要修改以下两个文件：
 
 1. **Define Configuration Schema / 定义配置表单**:
-   Edit `src/constants/drive-schemas.ts` to add the configuration fields required for the new image host.
-   编辑 `src/constants/drive-schemas.ts`，添加新图床所需的配置项定义。
+   Edit `src/constants/driveSchemas.ts` to add the configuration fields required for the new image host.
+   编辑 `src/constants/driveSchemas.ts`，添加新图床所需的配置项定义。
 
    Example / 示例:
    ```typescript

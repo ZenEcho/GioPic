@@ -4,8 +4,9 @@ import { useConfigStore } from '@/stores/config'
 import { useThemeStore } from '@/stores/theme'
 import { useI18n } from 'vue-i18n'
 import { useUploadInput } from '@/composables/useUploadInput'
-import { useSidebar } from '@/composables/home/useSidebar'
+import { useSidebar } from '@/composables/useSidebar'
 import type { DriveConfig } from '@/types'
+import { useRouter } from 'vue-router'
 
 import UploadZone from '@/components/home/upload/UploadZone.vue'
 import UploadQueue from '@/components/home/queue/UploadQueue.vue'
@@ -48,6 +49,7 @@ const {
 const { t } = useI18n()
 const configStore = useConfigStore()
 const themeStore = useThemeStore()
+const router = useRouter()
 
 // 是否显示上传队列（当有文件时自动显示）
 const showQueue = computed(() => props.fileQueue.items.length > 0)
@@ -127,10 +129,10 @@ const primaryColor = computed(() => themeStore.themeOverrides?.common?.primaryCo
                         :title="t('home.import')">
                         <div class="i-ph-download-simple-bold text-xs" />
                     </button>
-                    <button @click="emit('openSettings')"
+                    <button @click="router.push('/history')"
                         class="w-6 h-6   rounded-full flex items-center justify-center border border-dashed border-gray-300 dark:border-gray-600 text-gray-400 hover:text-primary hover:border-primary transition-colors"
-                        :title="t('settings.title')">
-                        <div class="i-ph-gear-bold text-xs" />
+                        :title="t('home.history.title')">
+                        <div class="i-ph-clock-counter-clockwise text-xs" />
                     </button>
                 </div>
             </div>
@@ -153,6 +155,7 @@ const primaryColor = computed(() => themeStore.themeOverrides?.common?.primaryCo
                         @upload-item="(id: string) => fileQueue.trigger(id)"
                         @retry-item="(id: string) => fileQueue.retry(id)"
                         @remove-item="(id: string): void => fileQueue.remove(id)" @clear-all="fileQueue.clear()"
+                        @open-history="router.push('/history')"
                         class="!m-0 !w-full !max-w-none !h-auto !border-none !shadow-none !bg-transparent" />
                 </div>
             </div>

@@ -30,23 +30,25 @@ export default {
   home: {
     nodes: '分发节点',
     nodeList: {
-      emptyDescription: '配置存储节点后即可开始上传。<br>支持多种存储策略组合。',
+      emptyDescription: '配置分发节点后即可开始上传。<br>支持多种存储策略组合。',
     },
     myImages: '我的图片',
     sidebar: {
         upload: '上传图片',
-        history: '图片列表',
-        nodes: '存储配置',
+        history: '历史',
+        nodes: '分发节点',
     },
     nav: {
         upload: '上传',
         history: '历史',
         config: '配置',
     },
-    addNode: '添加新接口',
+    addNode: '添加节点',
     createFirstNode: '创建第一个节点',
     noNodes: '暂无节点，请添加',
     refresh: '刷新',
+    nodeTip: '点击选择/取消选择',
+    editNode: '编辑节点',
     dropZone: {
       title: '释放图片到此处',
       subtitle: '支持多图并行上传，自动分发至已选节点',

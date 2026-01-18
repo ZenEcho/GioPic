@@ -37,10 +37,14 @@ async function injectUrlToContent(url: string) {
     // 如果没有记录到 last-content-tab，则回退到当前激活标签页
     const tabs = await browser.tabs.query({ active: true, currentWindow: true })
     if (tabs && tabs.length > 0 && tabs[0]?.id) {
-        await browser.tabs.sendMessage(tabs[0].id!, {
-            type: 'MANUAL_INJECT',
-            payload: { url }
-        })
+        try {
+            await browser.tabs.sendMessage(tabs[0].id!, {
+                type: 'MANUAL_INJECT',
+                payload: { url }
+            })
+        } catch (e) {
+            console.warn('Failed to inject URL to active tab', e)
+        }
     }
 }
 

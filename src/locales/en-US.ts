@@ -30,23 +30,25 @@ export default {
   home: {
     nodes: 'Nodes',
     nodeList: {
-      emptyDescription: 'Upload images after configuring storage nodes.<br>Supports multiple storage strategy combinations.',
+      emptyDescription: 'Upload images after configuring nodes.<br>Supports multiple storage strategy combinations.',
     },
     myImages: 'My Images',
     sidebar: {
         upload: 'Upload Image',
-        history: 'Image List',
-        nodes: 'Storage Config',
+        history: 'History',
+        nodes: 'Nodes',
     },
     nav: {
         upload: 'Upload',
         history: 'History',
         config: 'Config',
     },
-    addNode: 'Add New Interface',
+    addNode: 'Add Node',
     createFirstNode: 'Create First Node',
     noNodes: 'No nodes, please add',
     refresh: 'Refresh',
+    nodeTip: 'Click to toggle selection',
+    editNode: 'Edit Node',
     dropZone: {
       title: 'Drop Images Here',
       subtitle: 'Multi-image parallel upload, auto-distribute to selected nodes',

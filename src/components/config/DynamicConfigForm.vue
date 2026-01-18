@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, watch, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import type { FieldSchema } from '@/constants/drive-schemas'
+import type { FieldSchema } from '@/constants/driveSchemas'
 import { fetchLskyStrategies, fetchLskyAlbums } from '@/services/uploader'
 import { useMessage } from 'naive-ui'
 

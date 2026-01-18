@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useConfigStore } from '@/stores/config'
-import { useSidebar } from '@/composables/home/useSidebar'
+import { useSidebar } from '@/composables/useSidebar'
 import { useI18n } from 'vue-i18n'
 import { getStorageIcon } from '@/utils/icon'
 import { useThemeStore } from '@/stores/theme'
